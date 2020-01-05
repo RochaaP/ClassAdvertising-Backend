@@ -127,12 +127,13 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
      email: req.body['email'],
      registerItem: req.body['registerItem'],
      name: req.body['firstName'],
+     lastName: req.body['lastName'],
      create: admin.firestore.FieldValue.serverTimestamp(),
-     verify: 'Not Verified'
+     verify: 'assets/verification/not_verified.png'
    });
     const document = db.doc('user/'+id);
     document.set({
-      verify: 'Not Verified',
+      verify: 'assets/verification/not_verified.png',
       email: req.body['email'],
       firstName: req.body['firstName'],
       lastName: req.body['lastName'],
@@ -144,6 +145,7 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
       degreeYear: '',
       grad: '',
       profileImagePath: '',
+      backgroundImagePath: '',
       yearExperiences: '',
       teachingSchool: '',
 
@@ -181,12 +183,12 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
       registerItem: req.body['registerItem'],
       name: req.body['name'],
       create: admin.firestore.FieldValue.serverTimestamp(),
-      verify: 'Not Verified'
+      verify: 'assets/verification/not_verified.png'
     });
 
     const document = db.doc('institute/'+id);
     document.set({
-      verify: 'Not Verified',
+      verify: 'assets/verification/not_verified.png',
       email: req.body['email'],
       name: req.body['name'],
       contact: req.body['contact'],
@@ -256,6 +258,7 @@ app.post('/updateUserDetails/person', bodyParser.json(), (req, res) => {
     grad: req.body['grad'],
     degreeYear: req.body['degreeYear'],
     profileImagePath: req.body['profileImagePath'],
+    backgroundImagePath: req.body['backgroundImagePath'],
     yearExperiences: req.body['yearExperiences'],
     teachingSchool: req.body['teachingSchool'],
 
@@ -318,7 +321,8 @@ app.post('/updateUserDetails/institute', bodyParser.json(), (req, res) => {
     city: req.body['city'],
     town: req.body['town'],
     province: req.body['province'],
-    profileImagePath: req.body['profileImagePath']
+    profileImagePath: req.body['profileImagePath'],
+    backgroundImagePath: req.body['backgroundImagePath']
 
   },{merge:true})
   .then(function() {
@@ -382,11 +386,13 @@ app.post('/uploadposts',bodyParser.json(), (req, res) => {
       snapshot.forEach(doc =>{
         name = doc.data().name;
         let proPic = doc.data().profileImagePath;
+        let verify = doc.data().verify;
         
         const document = db.doc('posts/'+id);
               document.set({
                 email: req.body['email'],
                 name: name,
+                verify: verify,
                 proPic: proPic,
                 description: req.body['description'],
                 path: req.body['path'],
@@ -444,7 +450,7 @@ var collection = db.collection('posts').where('email', "==", email);
 // addClassDetails-person
 app.post('/uploadClasses/person', bodyParser.json(), (req, res) => {
   id = req.body['id'];
-  const document = db.doc('classes/'+id);
+  const document = db.doc('PersonClasses/'+id);
   document.set({
     email: req.body['email'],
     registerItem: req.body['registerItem'],
@@ -464,7 +470,7 @@ app.post('/getClasses/person', bodyParser.json(), (req, res) => {
   const email = req.body['email'];
   console.log(":asdfasdf email "+ email);
   let userDetails=[];
-  var collection = db.collection('classes').where('email','==',email);
+  var collection = db.collection('PersonClasses').where('email','==',email);
   collection.get().then(snapshot =>{
     snapshot.forEach(doc =>{
         userDetails.push({id: doc.id, data: doc.data()});
@@ -480,7 +486,7 @@ app.post('/getClasses/person', bodyParser.json(), (req, res) => {
 //Admin - Get All users
 app.get('/getAllUsers', (req, res) => {
   let userDetails=[];
-  var collection = db.collection('allRegisteredUsers').orderBy('create', 'desc');
+  var collection = db.collection('allRegisteredUsers').orderBy('name');
   collection.get().then(snapshot =>{
     snapshot.forEach(doc =>{
         userDetails.push({id: doc.id, data: doc.data()});
@@ -492,22 +498,48 @@ app.get('/getAllUsers', (req, res) => {
 });
 })
 // Verify User Details-person
-// app.post('/getAllUsers/person', bodyParser.json(), (req, res) => {
-//   const email = req.body['email'];
-//   console.log(":asdfasdf email "+ email);
-//   let userDetails=[];
-//   var collection = db.collection('classes').where('email','==',email);
-//   collection.get().then(snapshot =>{
-//     snapshot.forEach(doc =>{
-//         userDetails.push({id: doc.id, data: doc.data()});
-//     });                        
-//     res.status(200).json(userDetails);  
+app.post('/getAllUsers/verifyUser', bodyParser.json(), (req, res) => {
+  const email = req.body['email'];
+  var collection = db.collection('allRegisteredUsers').where('email', "==", email);
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
 
-// }).catch(err =>{
-//     res.status(500).json('Error getting document: '+ err);
-// });
-// })
+          const document = db.doc('allRegisteredUsers/'+doc.id);
+          document.update({
+           verify: 'assets/verification/verified.png'
+          })
+          .then(function() {
+            console.log('Document successfully written!');
+          })
+          .catch(function(error) {
+              console.error('Error writing document: ', error);
+          });
+    });
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
 
+
+    var collection = db.collection('posts').where('email', "==", email);
+      collection.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+
+              const document = db.doc('posts/'+doc.id);
+              document.update({
+              verify: 'assets/verification/verified.png'
+              })
+              .then(function() {
+                console.log('Document successfully written!');
+              })
+              .catch(function(error) {
+                  console.error('Error writing document: ', error);
+              });
+        });
+    }).catch(err =>{
+        res.status(500).json('Error getting document: '+ err);
+    });
+
+})
 
 // addClassDetails-institute
 app.post('/uploadClasses/institute', bodyParser.json(), (req, res) => {

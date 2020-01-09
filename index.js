@@ -197,7 +197,8 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
       city: '',
       town: '',
       province: '',
-      profileImagePath: ''
+      profileImagePath: '',
+      backgroundImagePath: ''
     })
     .then(function() {
       console.log('Document successfully written!');
@@ -449,22 +450,29 @@ var collection = db.collection('posts').where('email', "==", email);
 
 // addClassDetails-person
 app.post('/uploadClasses/person', bodyParser.json(), (req, res) => {
-  id = req.body['id'];
-  const document = db.doc('PersonClasses/'+id);
-  document.set({
-    email: req.body['email'],
-    registerItem: req.body['registerItem'],
-    content: req.body['content']
-   })
-  .then(function() {
-    console.log('Document successfully written!');
-  })
-  .catch(function(error) {
-      console.error('Error writing document: ', error);
-  });
-
+  const email = req.body['email'];
+  var collection = db.collection('allRegisteredUsers').where('email', "==", email);
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+     var name = doc.data().name + ' '+doc.data().lastName;;
+  
+      id = req.body['id'];
+      const document = db.doc('PersonClasses/'+id);
+      document.set({
+        email: req.body['email'],
+        registerItem: req.body['registerItem'],
+        content: req.body['content'],
+        name: name 
+      })
+      .then(function() {
+        console.log('Document successfully written!');
+      })
+      .catch(function(error) {
+          console.error('Error writing document: ', error);
+      });
+    })
+  })  
 })
-
 // getClassDetails-person
 app.post('/getClasses/person', bodyParser.json(), (req, res) => {
   const email = req.body['email'];
@@ -497,6 +505,38 @@ app.get('/getAllUsers', (req, res) => {
     res.status(500).json('Error getting document: '+ err);
 });
 })
+
+//Get all Person Users
+app.get('/getAllUsers/person', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('allRegisteredUsers').where('registerItem', '==', 'person');
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
+})
+
+app.get('/getAllUsers/institute', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('allRegisteredUsers').where('registerItem', '==', 'institute');
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
+})
+
+
+
 // Verify User Details-person
 app.post('/getAllUsers/verifyUser', bodyParser.json(), (req, res) => {
   const email = req.body['email'];
@@ -543,21 +583,31 @@ app.post('/getAllUsers/verifyUser', bodyParser.json(), (req, res) => {
 
 // addClassDetails-institute
 app.post('/uploadClasses/institute', bodyParser.json(), (req, res) => {
-  id = req.body['id'];
-  const document = db.doc('InstituteClasses/'+id);
-  document.set({
-    email: req.body['email'],
-    registerItem: req.body['registerItem'],
-    content: req.body['content']
-   })
-  .then(function() {
-    console.log('Document successfully written!');
-  })
-  .catch(function(error) {
-      console.error('Error writing document: ', error);
-  });
 
-})
+  const email = req.body['email'];
+  var collection = db.collection('allRegisteredUsers').where('email', "==", email);
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+     var name = doc.data().name;
+  
+            id = req.body['id'];
+            const document = db.doc('InstituteClasses/'+id);
+            document.set({
+              email: req.body['email'],
+              registerItem: req.body['registerItem'],
+              content: req.body['content'],
+              name: name
+            })
+            .then(function() {
+              console.log('Document successfully written!');
+            })
+            .catch(function(error) {
+                console.error('Error writing document: ', error);
+            });
+
+      });
+    })
+  })
 
 // getClassDetails-institute
 app.post('/getClasses/institute', bodyParser.json(), (req, res) => {
@@ -565,6 +615,53 @@ app.post('/getClasses/institute', bodyParser.json(), (req, res) => {
   console.log(":asdfasdf email "+ email);
   let userDetails=[];
   var collection = db.collection('InstituteClasses').where('email','==',email);
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
+})
+
+
+//get all users full details
+app.get('/getUsers/allUsers', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('user');
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
+})
+	
+//get all users for person search
+app.get('/getAllClasses/persons', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('PersonClasses');
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+}).catch(err =>{
+    res.status(500).json('Error getting document: '+ err);
+});
+})
+	
+
+//get all users for institute search
+app.get('/getAllClasses/institute', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('InstituteClasses');
   collection.get().then(snapshot =>{
     snapshot.forEach(doc =>{
         userDetails.push({id: doc.id, data: doc.data()});

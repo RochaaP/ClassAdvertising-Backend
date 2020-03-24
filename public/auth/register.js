@@ -21,7 +21,7 @@ var db = admin.firestore();
 //      id = req.body['id'];
 //      registerItem = req.body['registerItem'];
   
-//      const document = db.doc('allRegisteredUsers/'+id) 
+//      const document = db.doc('users/'+id) 
 //      document.set({
 //        email: req.body['email'],
 //        registerItem: req.body['registerItem'],
@@ -83,7 +83,7 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
 
    if (registerItem == 'person'){
 
-   const regDocument = db.doc('allRegisteredUsers/'+id) 
+   const regDocument = db.doc('users/'+id) 
    regDocument.set({
      email: req.body['email'],
      registerItem: req.body['registerItem'],
@@ -124,7 +124,7 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
    }
    else if(registerItem == 'institute'){
 
-    const regDocument = db.doc('allRegisteredUsers/'+id) 
+    const regDocument = db.doc('users/'+id) 
     regDocument.set({
       email: req.body['email'],
       registerItem: req.body['registerItem'],
@@ -159,7 +159,7 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
 app.post('/register/getUserRegData',bodyParser.json(), (req, res) => {
   let email = req.body['email'];
   let userDetails=[];
-  var collection = db.collection('allRegisteredUsers');
+  var collection = db.collection('users');
   collection.where('email', "==", email).get().then(snapshot =>{
     snapshot.forEach(doc =>{
         userDetails.push({name:doc.data().name, reg: doc.data().registerItem});
@@ -408,7 +408,7 @@ app.post('/getClasses/person', bodyParser.json(), (req, res) => {
 //Admin - Get All users
 app.get('/getAllUsers', (req, res) => {
   let userDetails=[];
-  var collection = db.collection('allRegisteredUsers').orderBy('create', 'desc');
+  var collection = db.collection('users').orderBy('create', 'desc');
   collection.get().then(snapshot =>{
     snapshot.forEach(doc =>{
         userDetails.push({id: doc.id, data: doc.data()});

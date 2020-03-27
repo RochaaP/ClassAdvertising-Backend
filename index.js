@@ -81,17 +81,6 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'))
 
 // app.use(cors(corsOptions))
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Node API')
- 
-})
-
-app.get('/getData', (req, res) => {
-  // res.json({'message': 'Hello World'})
-  console.log("asdhjfkajd")
-})
-///
-
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 
@@ -99,6 +88,22 @@ admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 let db = admin.firestore();
 
+const paperRouter = require("./routes/papers");
+const questionRouter = require("./routes/questions");
+const userRouter = require("./routes/users");
+const subjectRouter = require("./routes/subjects");
+
+app.use((req, res, next) =>{
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+
+  if(req.method === "OPTIONS"){
+      res.header("Access-Control-Allow-Methods", "PUT, DELETE, GET, POST");
+      // with this request won't go to routes
+      return res.status(200).json({});
+  }
+  next();
+});
 
 app.get('/', (req, res) => {
   console.log("sjdhf");
@@ -543,4 +548,55 @@ app.post('/getClasses/institute', bodyParser.json(), (req, res) => {
     res.status(500).json('Error getting document: '+ err);
 });
 })
-	
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.use("/papers", paperRouter);
+app.use("/questions", questionRouter);
+app.use("/users", userRouter);
+app.use("/subjects", subjectRouter);
+// app.get("/papers", (req, res) =>{
+//   paperRef = db.collection("papers");
+//   console.log("Mtute-Papers");
+//   let papers = [];
+//   paperRef.get().then(snapshot =>{
+//       snapshot.forEach(doc =>{
+//           papers.push({id: doc.id, data: doc.data()});
+//       });                        
+//       res.status(200).json(papers);
+//   }).catch(err =>{
+//       console.log('Error getting paper documents', err);
+//       res.status(500).json('Error getting paper documents', err);
+//   });
+// });
+
+// app.get("/questions/paper/:paperId", (req, res) =>{ 
+//   questionRef = db.collection("questions");   
+//   console.log("Mtute-Questions Filter By Paper Id");
+//   let paperId = req.params.paperId;
+//   let questions = [];
+//   questionRef.where('paper', "==", paperId).get().then(snapshot =>{
+//       snapshot.forEach(doc =>{
+//           questions.push({id: doc.id, data: doc.data()});
+//       });                        
+//       res.status(200).json(questions);   
+//   }).catch(err =>{
+//       res.status(500).json('Error getting question document by Paper Id: '+ err);
+//   });
+// });
+  
+app.use((req, res, next) =>{
+  const error = new Error('Not found');
+  error.status = 404;
+  next(error);
+});
+
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.json({
+      error: {
+          message: error.message
+      }
+  });
+});

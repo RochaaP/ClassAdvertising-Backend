@@ -556,42 +556,15 @@ app.use("/papers", paperRouter);
 app.use("/questions", questionRouter);
 app.use("/users", userRouter);
 app.use("/subjects", subjectRouter);
-// app.get("/papers", (req, res) =>{
-//   paperRef = db.collection("papers");
-//   console.log("Mtute-Papers");
-//   let papers = [];
-//   paperRef.get().then(snapshot =>{
-//       snapshot.forEach(doc =>{
-//           papers.push({id: doc.id, data: doc.data()});
-//       });                        
-//       res.status(200).json(papers);
-//   }).catch(err =>{
-//       console.log('Error getting paper documents', err);
-//       res.status(500).json('Error getting paper documents', err);
-//   });
-// });
-
-// app.get("/questions/paper/:paperId", (req, res) =>{ 
-//   questionRef = db.collection("questions");   
-//   console.log("Mtute-Questions Filter By Paper Id");
-//   let paperId = req.params.paperId;
-//   let questions = [];
-//   questionRef.where('paper', "==", paperId).get().then(snapshot =>{
-//       snapshot.forEach(doc =>{
-//           questions.push({id: doc.id, data: doc.data()});
-//       });                        
-//       res.status(200).json(questions);   
-//   }).catch(err =>{
-//       res.status(500).json('Error getting question document by Paper Id: '+ err);
-//   });
-// });
   
+// Handling routing if no matching url is not found
 app.use((req, res, next) =>{
   const error = new Error('Not found');
   error.status = 404;
   next(error);
 });
 
+// Handling error messages
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({

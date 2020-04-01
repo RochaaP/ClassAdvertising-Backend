@@ -6,6 +6,7 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 var subjectRef = db.collection("subjects");
 
+// Get all the subjects
 router.get("/", (req, res, next) =>{
     console.log("Mtute-Subjects");
     let subjects = [];
@@ -20,6 +21,7 @@ router.get("/", (req, res, next) =>{
     });
 });
 
+// Get subject details by id
 router.get("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Subject " + id);
@@ -38,6 +40,7 @@ router.get("/:id", (req, res, next) =>{
     });
 });
 
+// Delete subject by id
 router.delete("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Subject " + id);
@@ -51,6 +54,8 @@ router.delete("/:id", (req, res, next) =>{
     });
 });
 
+
+// Update subject details
 router.post("/", (req, res, next) =>{
     subjectRef.add(req.body).then(onfulfilled => {
         console.log('Added subject document with ID: ', onfulfilled.id);

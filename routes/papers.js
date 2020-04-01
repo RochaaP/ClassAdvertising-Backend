@@ -6,7 +6,7 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 var paperRef = db.collection("papers");
 
-
+// Get all papers
 router.get("/", (req, res, next) =>{
     console.log("Mtute-Papers");
     let papers = [];
@@ -23,18 +23,42 @@ router.get("/", (req, res, next) =>{
 
 // Get papers by subjectId
 router.get("/subject/:subjectId", (req, res, next) =>{
-    console.log("Mtute-Papers");    
-    res.status(200).json("Filter by Subject");
+    let subjectId = req.params.subjectId;
+    console.log("Mtute-Papers by SubjectId " + subjectId);   
+    let papers = [];
+    paperRef.where('subject', '==', subjectId).get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            papers.push({id: doc.id, data: doc.data()});
+        });   
+        console.log(papers);
+        res.status(200).json(papers);
+    }).catch(err =>{
+        const error = new Error('Error getting paper documents: '+ err);
+        error.status = 500;
+        next(error);
+    });
 });
 
 // Get papers by instructorId
-router.get("/instructor/:intructorId", (req, res, next) =>{
-    console.log("Mtute-Papers");    
-    res.status(200).json("Filter by Instructor");
+router.get("/instructor/:instructorId", (req, res, next) =>{
+    let instructorId = req.params.instructorId;
+    console.log("Mtute-Papers by InstructorId " + instructorId);   
+    let papers = [];
+    paperRef.where('instructor', '==', instructorId).get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            papers.push({id: doc.id, data: doc.data()});
+        });   
+        console.log(papers);
+        res.status(200).json(papers);
+    }).catch(err =>{
+        const error = new Error('Error getting paper documents: '+ err);
+        error.status = 500;
+        next(error);
+    });
 });
 
 // Get papers by paperId
-router.get("/:id", (req, res, next) =>{
+router.get("id/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Paper " + id);
     paperRef.doc(id).get().then(doc =>{    
@@ -54,6 +78,7 @@ router.get("/:id", (req, res, next) =>{
     });
 });
 
+// Delete paper by Id
 router.delete("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Paper " + id);
@@ -71,6 +96,7 @@ router.delete("/:id", (req, res, next) =>{
     });
 });
 
+// Create paper
 router.post("/", (req, res, next) =>{
     paperRef.add(req.body).then(onfulfilled => {
         console.log('Added paper document with ID: ', onfulfilled.id);
@@ -81,6 +107,34 @@ router.post("/", (req, res, next) =>{
         error.status = 500;
         next(error);
       });
+});
+
+router.post("/subjects/",async (req, res, next) =>{
+    let subjectArray = req.body["subjectArray"];  
+    console.log(subjectArray);
+    let papers = [];
+    const waitForPapers = new Promise(async (resolve, reject)=>{
+        await subjectArray.forEach(async (element,index, array) => {
+            console.log("Subject Id: " + element);
+            let sub_papers = [];
+            await paperRef.where("subject", "==", element).get().then(snapshot =>{
+                snapshot.forEach(doc =>{
+                    sub_papers.push({id: doc.id, data: doc.data()});
+                });
+                console.log(sub_papers);
+            }).catch(err =>{
+                const error = new Error('Error getting paper documents: '+ err);
+                error.status = 500;
+                next(error);
+            });
+            papers.push({subject: element, papers: sub_papers});
+            if(index === array.length-1) resolve()
+        });
+    })
+    waitForPapers.then(()=>{
+        console.log(papers);
+        res.status(200).json(papers);
+    });
 });
 
 // Update paper details

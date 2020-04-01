@@ -6,6 +6,7 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 var questionRef = db.collection("questions");
 
+// Get all the questions
 router.get("/", (req, res, next) =>{
     console.log("Mtute-Questions");
     let questions = [];
@@ -19,6 +20,7 @@ router.get("/", (req, res, next) =>{
     });
 });
 
+// Get questions by paperId
 router.get("/paper/:paperId", (req, res, next) =>{    
     console.log("Mtute-Questions Filter By Paper Id");
     let paperId = req.params.paperId;
@@ -33,6 +35,7 @@ router.get("/paper/:paperId", (req, res, next) =>{
     });
 });
 
+// Get question by id
 router.get("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Question " + id);
@@ -51,6 +54,7 @@ router.get("/:id", (req, res, next) =>{
     });
 });
 
+// Delete question by id
 router.delete("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Question " + id);
@@ -64,6 +68,7 @@ router.delete("/:id", (req, res, next) =>{
     });
 });
 
+// Create question
 router.post("/", (req, res, next) =>{
     questionRef.add(req.body).then(onfulfilled => {
         console.log('Added question document with ID: ', onfulfilled.id);
@@ -76,6 +81,7 @@ router.post("/", (req, res, next) =>{
       });
 });
 
+// Update question
 router.put("/", (req, res, next) =>{
     console.log("Mtute-Question Updated");
     questionRef.doc(req.body.id).update(req.body.data).then(onfulfilled=>{

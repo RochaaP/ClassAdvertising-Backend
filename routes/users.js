@@ -6,6 +6,7 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 var userRef = db.collection("users");
 
+// Get all the users
 router.get("/", (req, res, next) =>{
     console.log("Mtute-Users");
     let users = [];
@@ -20,6 +21,7 @@ router.get("/", (req, res, next) =>{
     });
 });
 
+// Get user details by id
 router.get("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-User " + id);
@@ -38,6 +40,7 @@ router.get("/:id", (req, res, next) =>{
     });
 });
 
+// Delete user by id
 router.delete("/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-User " + id);
@@ -51,6 +54,7 @@ router.delete("/:id", (req, res, next) =>{
     });
 });
 
+// Update user details
 router.post("/", (req, res, next) =>{
     userRef.add(req.body).then(onfulfilled => {
         console.log('Added user document with ID: ', onfulfilled.id);

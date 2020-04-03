@@ -92,6 +92,7 @@ const paperRouter = require("./routes/papers");
 const questionRouter = require("./routes/questions");
 const userRouter = require("./routes/users");
 const subjectRouter = require("./routes/subjects");
+const attemptRouter = require("./routes/attempts");
 
 app.use((req, res, next) =>{
   res.header("Access-Control-Allow-Origin", "*");
@@ -556,6 +557,7 @@ app.use("/papers", paperRouter);
 app.use("/questions", questionRouter);
 app.use("/users", userRouter);
 app.use("/subjects", subjectRouter);
+app.use("/attempts", attemptRouter);
   
 // Handling routing if no matching url is not found
 app.use((req, res, next) =>{

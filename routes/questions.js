@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
+const fastcsv = require('fast-csv');
+const fs = require('fs');
+
 const admin = require('firebase-admin');
 
 let db = admin.firestore();
 var questionRef = db.collection("questions");
+var paperRef = db.collection("papers");
 
 // Get all the questions
 router.get("/", (req, res, next) =>{
@@ -25,7 +29,7 @@ router.get("/paper/:paperId", (req, res, next) =>{
     console.log("Mtute-Questions Filter By Paper Id");
     let paperId = req.params.paperId;
     let questions = [];
-    questionRef.where('paper', "==", paperId).get().then(snapshot =>{
+    questionRef.where('paper', "==", paperId).orderBy("number","asc").get().then(snapshot =>{
         snapshot.forEach(doc =>{
             questions.push({id: doc.id, data: doc.data()});
         });                        
@@ -36,7 +40,7 @@ router.get("/paper/:paperId", (req, res, next) =>{
 });
 
 // Get question by id
-router.get("/:id", (req, res, next) =>{
+router.get("/id/:id", (req, res, next) =>{
     let id = req.params.id;
     console.log("Mtute-Question " + id);
     questionRef.doc(id).get().then(doc =>{    
@@ -93,6 +97,43 @@ router.put("/", (req, res, next) =>{
       error.status = 500;
       next(error);
     });
-})
+});
+
+// Write questions to CSV files
+router.get("/write/", async (req, res, next) => {
+    console.log("Mtute Questions to CSV");
+    let papers = [];
+    await paperRef.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            papers.push({id: doc.id, data: doc.data()});
+        });
+    }).catch(err =>{
+        console.log('Error getting paper documents', err);
+        next(error);
+    });
+    papers.forEach(async (element, index, array) => {
+        console.log("Paper Id: " + element.id);
+        let questions = [];
+        await questionRef.where("paper", "==", element.id).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                questions.push(doc.data());
+            });
+        }).catch(err => {
+            const error = new Error('Error getting paper documents: ' + err);
+            error.status = 500;
+            next(error);
+        });
+        if(questions.length!=0){
+            let filepath = "Questions/" + element.id + ".csv";
+            const ws = fs.createWriteStream(filepath);
+            fastcsv.write(questions, { headers: true }).pipe(ws);
+            console.log("Created " + filepath);
+        }
+        else{
+            // nothing to do
+        }
+        if(index === array.length-1) res.status(200).json({"message": "Done"})
+    });
+});
 
 module.exports = router;

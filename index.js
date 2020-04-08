@@ -80,17 +80,6 @@ app.listen(port, () => console.log('Example app listening on port 3000!'))
 
 // app.use(cors(corsOptions))
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Node API')
- 
-})
-
-app.get('/getData', (req, res) => {
-  // res.json({'message': 'Hello World'})
-  console.log("asdhjfkajd")
-})
-///
-
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 
@@ -101,6 +90,23 @@ let db = admin.firestore();
 // var routes = require('./routes/');
 
 // app.use('/api', routes);
+const paperRouter = require("./routes/papers");
+const questionRouter = require("./routes/questions");
+const userRouter = require("./routes/users");
+const subjectRouter = require("./routes/subjects");
+const attemptRouter = require("./routes/attempts");
+
+app.use((req, res, next) =>{
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+
+  if(req.method === "OPTIONS"){
+      res.header("Access-Control-Allow-Methods", "PUT, DELETE, GET, POST");
+      // with this request won't go to routes
+      return res.status(200).json({});
+  }
+  next();
+});
 
 
 
@@ -948,3 +954,28 @@ app.get('*', (req,res) => {
   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
 });
 
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.use("/papers", paperRouter);
+app.use("/questions", questionRouter);
+app.use("/users", userRouter);
+app.use("/subjects", subjectRouter);
+app.use("/attempts", attemptRouter);
+  
+// Handling routing if no matching url is not found
+app.use((req, res, next) =>{
+  const error = new Error('Not found');
+  error.status = 404;
+  next(error);
+});
+
+// Handling error messages
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.json({
+      error: {
+          message: error.message
+      }
+  });
+});

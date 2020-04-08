@@ -48,3 +48,5 @@ Thumbs.db
 
 /dist
 /routes
+/Questions
+.serviceAccountKey.json

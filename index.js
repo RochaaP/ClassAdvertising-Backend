@@ -38,7 +38,7 @@ const app = express();
 //   res.sendFile(path.join(__dirname + '/dist/frontend/index.html'));
 // });
 
-// app.use(express.static(__dirname + '/dist/frontend'));
+app.use(express.static(__dirname + '/dist/frontend'));
 
 
 // const register = require('./public/auth/register');

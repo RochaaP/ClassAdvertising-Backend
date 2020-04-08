@@ -796,6 +796,154 @@ app.post('/deletePosts', bodyParser.json(), (req, res) => {
 
 })
 
+
+app.post('/uploadFiles',bodyParser.json(),(req,res) =>{
+  id = req.body['id'];
+  email = req.body['email'];
+  
+  var collection = db.collection('users');
+  collection.where('email', "==", email).get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+      firstname = doc.data().firstname;
+      lastname = doc.data().lastname;
+      let vale = `${firstname} ${lastname}`;
+      let proPic = doc.data().img_url;
+      let verify = doc.data().verify;
+
+      const document = db.doc('notes/'+id);
+      document.set({
+        title: req.body['title'],
+        email: req.body['email'],
+        grade: req.body['grade'],
+        subject: req.body['subject'],
+        name: vale,
+        verify: verify,
+        proPic: proPic,
+        description: req.body['description'],
+        path: req.body['path'],
+        create: admin.firestore.FieldValue.serverTimestamp()
+        
+      })
+      .then(function() {
+        console.log('Document successfully written!');
+        res.json({status:200})
+      })
+      .catch(function(error) {
+        res.json({status:400});
+        console.error('Error writing document: ', error);
+      });
+    });               
+    res.json({status:200});
+  }).catch(err =>{
+      res.json({status:400});
+      res.status(500).json('Error getting document: '+ err);
+  });  
+});
+
+
+//get all users for person search
+app.get('/getNotes', (req, res) => {
+  let userDetails=[];
+  var collection = db.collection('notes');
+  collection.get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+        userDetails.push({id: doc.id, data: doc.data()});
+    });                        
+    res.status(200).json(userDetails);  
+
+  }).catch(err =>{
+      res.status(500).json('Error getting document: '+ err);
+  });
+})
+
+
+//Request an appointment
+app.post('/makeAppointment', bodyParser.json(), (req, res) => {
+  email = req.body['userEmail'];
+  ee = req.body['email'];
+  let userd = [];
+  var collection = db.collection('users');
+  collection.where('email', "==", email).get().then(snapshot =>{
+    snapshot.forEach(doc1 =>{
+      id = doc1.id;
+      firstname = doc1.data().firstname;
+      lastname = doc1.data().lastname;
+      let vale = `${firstname} ${lastname}`;
+      let proPic = doc1.data().img_url;
+      console.log(id);
+
+      let cityRef = db.collection('appointments').doc(id);
+      let getDoc = cityRef.get()
+        .then(doc2 => {
+          if (!doc2.exists) {
+            userDetails ={
+              topic: req.body['topic'],
+              description: req.body['description']
+            };
+            this.userd = [{ userDetails}];
+          } else {
+            this.userd = doc2.data();
+            console.log(this.userd+ 'eamil is here');            
+            this.userd.push({
+                topic:req.body['topic'],
+                description:req.body['description'],
+              });
+            }
+            const document = db.doc('appointments/'+id);
+            document.set({
+              email: req.body['email'],
+              content: this.userd
+              
+              // content: content.push(req.body['content']),
+            },{merge:true})
+            
+            .then(function() {
+              console.log('Document successfully Updated!');
+              res.json({status:200});
+      
+            })
+            .catch(function(error) {
+              res.json({status:400}); 
+              console.error('Error writing document: ', error);
+            });          
+        })
+        .catch(err => {
+          console.log('Error getting document', err);
+        });
+    })
+  });
+});  
+
+app.post('/getAppointments', bodyParser.json(), (req, res) => {
+  let userDetails=[];
+  email = req.body['email'];
+  var collection = db.collection('users');
+  collection.where('email', "==", email).get().then(snapshot =>{
+    snapshot.forEach(doc =>{
+      id = doc.id;
+      console.log(id);
+      let cityRef = db.collection('appointments').doc(id);
+      let getDoc = cityRef.get()
+        .then(doc2 => {
+          userDetails.push({id: doc2.id, data: doc2.data()});
+          res.status(200).json(userDetails);  
+        })
+        .catch(err => {
+          console.log('Error getting document', err);
+        });
+
+
+
+    });                        
+    // res.status(200).json(userDetails);  
+
+  }).catch(err =>{
+      res.status(500).json('Error getting document: '+ err);
+  });
+})
+
+
+
 app.get('*', (req,res) => {
   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
 });

@@ -950,9 +950,7 @@ app.post('/getAppointments', bodyParser.json(), (req, res) => {
 
 
 
-app.get('*', (req,res) => {
-  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
-});
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -979,3 +977,6 @@ app.use((error, req, res, next) => {
       }
   });
 });
+// app.get('*', (req,res) => {
+//   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
+// });

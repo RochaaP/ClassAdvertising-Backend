@@ -54,8 +54,10 @@ router.get("/:id", (req, res, next) =>{
         else{
             res.status(200).json({id: doc.id, data: doc.data()});
         }     
-    }).catch(err =>{
-        res.status(500).json('Error getting subject document: '+ err);
+    }).catch(err =>{        
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -67,9 +69,13 @@ router.delete("/:id", (req, res, next) =>{
         res.status(200).json({data: onfulfilled, status: true})
     },
     onRejected =>{
-        res.status(500).json({data: onRejected, status: false})
+        const error = new Error(onRejected);
+        error.status = 500;
+        next(error);
     }).catch(err =>{
-        res.status(500).json('Error getting subject document: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 

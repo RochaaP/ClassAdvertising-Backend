@@ -17,7 +17,9 @@ router.get("/", (req, res, next) =>{
         res.status(200).json(papers);
     }).catch(err =>{
         console.log('Error getting paper documents', err);
-        res.status(500).json('Error getting paper documents', err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 

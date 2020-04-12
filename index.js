@@ -38,7 +38,7 @@ const app = express();
 //   res.sendFile(path.join(__dirname + '/dist/frontend/index.html'));
 // });
 
-app.use(express.static(__dirname + '/dist/frontend'));
+// app.use(express.static(__dirname + '/dist/frontend'));
 
 
 // const register = require('./public/auth/register');
@@ -90,6 +90,7 @@ let db = admin.firestore();
 // var routes = require('./routes/');
 
 // app.use('/api', routes);
+const devRouter = require("./routes/dev");
 const paperRouter = require("./routes/papers");
 const questionRouter = require("./routes/questions");
 const userRouter = require("./routes/users");
@@ -948,15 +949,10 @@ app.post('/getAppointments', bodyParser.json(), (req, res) => {
   });
 })
 
-
-
-app.get('*', (req,res) => {
-  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
-});
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.use("/dev", devRouter); // This router will be used only for development process
 app.use("/papers", paperRouter);
 app.use("/questions", questionRouter);
 app.use("/users", userRouter);
@@ -978,4 +974,8 @@ app.use((error, req, res, next) => {
           message: error.message
       }
   });
+});
+
+app.use('*', (req,res) => {
+  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
 });

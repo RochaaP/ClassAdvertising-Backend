@@ -5,6 +5,8 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 var userRef = db.collection("users");
+var studentRef = db.collection("student");
+var instructorRef = db.collection("instructor");
 
 // Get all the users
 router.get("/", (req, res, next) =>{

@@ -7,8 +7,8 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 
-
-router.post('/uploadposts',bodyParser.json(), (req, res) => {
+//upload a new post
+router.post('/add',bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     const registerItem = req.body['registerItem'];
     console.log(registerItem)
@@ -99,8 +99,13 @@ router.post('/uploadposts',bodyParser.json(), (req, res) => {
     }
   })
 
+
+
+
+
+
 // post on  newsfeed
-router.get('/getPostsData/posts', (req, res) => {
+router.get('/all', (req, res) => {
     let userDetails=[];
     var collection = db.collection('posts').orderBy('create', 'desc');
     collection.get().then(snapshot =>{
@@ -116,7 +121,7 @@ router.get('/getPostsData/posts', (req, res) => {
   })
   
   //get user's posts
-router.post('/getUserPosts/user', bodyParser.json(), (req, res) => {
+router.post('/get/individual', bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     let userDetails=[];
   var collection = db.collection('posts').where('email', "==", email);
@@ -148,7 +153,7 @@ router.post('/deletePosts', bodyParser.json(), (req, res) => {
  })
     
 //Update Post
-router.post('/uploadposts/update', bodyParser.json(), (req, res) => {
+router.post('/update', bodyParser.json(), (req, res) => {
     id = req.body['id'];
     // console.log('afdsf '+req.body);
     const document = db.doc('posts/'+id);

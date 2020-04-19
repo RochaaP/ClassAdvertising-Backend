@@ -18,8 +18,6 @@ router.get('/getImages', (req, res) => {
           userDetails.push({id: doc.id, data: doc.data()});
       });                        
       res.status(200).json(userDetails);  
-      console.log(userDetails);
-  
   }).catch(err =>{
       res.status(500).json('Error getting document: '+ err);
   });

@@ -15,7 +15,6 @@ router.post('/getAppointments/student', bodyParser.json(), (req, res) => {
   collection.where('email', "==", email).get().then(snapshot =>{
     snapshot.forEach(doc =>{
       id = doc.id;
-      console.log(id);
       let cityRef = db.collection('appointments').doc(id);
       let getDoc = cityRef.get()
         .then(doc2 => {
@@ -25,9 +24,6 @@ router.post('/getAppointments/student', bodyParser.json(), (req, res) => {
         .catch(err => {
           console.log('Error getting document', err);
         });
-
-
-
     });                        
     // res.status(200).json(userDetails);  
 
@@ -87,7 +83,7 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
                 },{merge:true})
                 
                 .then(function() {
-                  console.log('Document successfully Updated!');
+                  console.log('Appointment successfully Updated!');
                   res.json({status:200});
           
                 })
@@ -180,7 +176,6 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
   collection.where('email', "==", email).get().then(snapshot =>{
     snapshot.forEach(doc =>{
       id = doc.id;
-      console.log(id);
       let cityRef = db.collection('appointmentsista').doc(id);
       let getDoc = cityRef.get()
         .then(doc2 => {
@@ -190,9 +185,6 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
         .catch(err => {
           console.log('Error getting document', err);
         });
-
-
-
     });                        
     // res.status(200).json(userDetails);  
 

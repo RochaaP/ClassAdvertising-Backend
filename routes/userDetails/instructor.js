@@ -31,12 +31,10 @@ router.post('/get',bodyParser.json(), (req, res) => {
    
     collection.where('email', '==', email).get().then(snapshot =>{
         snapshot.forEach(doc => {
-            console.log(doc.data());
             const id = doc.id;
 
             let collection2 = db.collection('instructor').doc(id);
             collection2.get().then(doc2=> {
-                console.log('Document data:', doc2.data());
                 userDetails.push({id:doc.id,data:doc.data(),more:doc2.data()});
                 res.status(200).json(userDetails); 
             })

@@ -11,7 +11,6 @@ let db = admin.firestore();
 router.post('/add',bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     const registerItem = req.body['registerItem'];
-    console.log(registerItem)
     const id = req.body['id']
     let userDetails=[];
   
@@ -24,7 +23,6 @@ router.post('/add',bodyParser.json(), (req, res) => {
           let vale = `${firstname} ${lastname}`;
           let proPic = doc.data().img_url;
           let verify = doc.data().verify;
-          // console.log('vvarasdf ' +vale);
   
           const document = db.doc('posts/'+id);
                 document.set({
@@ -59,7 +57,6 @@ router.post('/add',bodyParser.json(), (req, res) => {
     }
   
     if(registerItem == 'institute'){
-      console.log(req.body);
       var collection = db.collection('users');
       collection.where('email', "==", email).get().then(snapshot =>{
         snapshot.forEach(doc =>{
@@ -155,7 +152,6 @@ router.post('/deletePosts', bodyParser.json(), (req, res) => {
 //Update Post
 router.post('/update', bodyParser.json(), (req, res) => {
     id = req.body['id'];
-    // console.log('afdsf '+req.body);
     const document = db.doc('posts/'+id);
     document.update({
       title: req.body['title'],

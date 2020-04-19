@@ -17,7 +17,7 @@ router.post('/', bodyParser.json(), (req, res) => {
              verify: 'assets/verification/verified.png'
             })
             .then(function() {
-              console.log('Document successfully written!');
+              console.log('user successfully verified!');
             })
             .catch(function(error) {
                 console.error('Error writing document: ', error);
@@ -37,7 +37,7 @@ router.post('/', bodyParser.json(), (req, res) => {
                 verify: 'assets/verification/verified.png'
                 })
                 .then(function() {
-                  console.log('Document successfully written!');
+                  console.log('users posts successfully verified');
                 })
                 .catch(function(error) {
                     console.error('Error writing document: ', error);

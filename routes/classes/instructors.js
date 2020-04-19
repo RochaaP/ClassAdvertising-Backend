@@ -26,7 +26,6 @@ router.get('/all', (req, res) => {
 // get individual class details
 router.post('/individual', bodyParser.json(), (req, res) => {
     const email = req.body['email'];
-    console.log(":asdfasdf email "+ email);
     let userDetails=[];
     var collection = db.collection('PersonClasses').where('email','==',email);
     collection.get().then(snapshot =>{
@@ -57,7 +56,7 @@ router.post('/add', bodyParser.json(), (req, res) => {
                 name: name 
             })
             .then(function() {
-                console.log('Document successfully written!');
+                console.log('Classes successfully written!');
                 res.json({status:200});
             })
             .catch(function(error) {

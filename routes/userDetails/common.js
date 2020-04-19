@@ -63,7 +63,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
  
      })
      .then(function() {
-       console.log('Document successfully written!');
+       console.log('Instructor successfully registered!');
       
      })
      .catch(function(error) {
@@ -98,7 +98,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
        backgroundImagePath: ''
      })
      .then(function() {
-       console.log('Document successfully written!');
+       console.log('Institute successfully registered!');
        // res.json({status:200});
      })
      .catch(function(error) {
@@ -110,7 +110,6 @@ router.post('/register', bodyParser.json(), (req, res) => {
     else if (registerItem == 'student'){
  
      const regDocument = db.doc('users/'+id);
-     console.log(regDocument +' user createed '+id );
      regDocument.set({
        email: req.body['email'],
        role: req.body['registerItem'],
@@ -123,7 +122,6 @@ router.post('/register', bodyParser.json(), (req, res) => {
        contact: req.body['contact']
      });
       const document = db.doc('student/'+id);
-     console.log('student createed')
       document.set({
         verify: 'assets/verification/not_verified.png',
         email: req.body['email'],
@@ -131,7 +129,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
   
       })
       .then(function() {
-        console.log('Document successfully written!');
+        console.log('Student successfully written!');
       })
       .catch(function(error) {
           console.error('Error writing document: ', error);

@@ -26,7 +26,6 @@ router.get('/all', (req, res) => {
 // getClassDetails-institute
 router.post('/individual', bodyParser.json(), (req, res) => {
     const email = req.body['email'];
-    console.log(":asdfasdf email "+ email);
     let userDetails=[];
     var collection = db.collection('InstituteClasses').where('email','==',email);
     collection.get().then(snapshot =>{
@@ -69,8 +68,5 @@ router.post('/add', bodyParser.json(), (req, res) => {
     })
 });
   
-
-
-
 
 module.exports = router;

@@ -96,6 +96,14 @@ const userRouter = require("./routes/users");
 const subjectRouter = require("./routes/subjects");
 const attemptRouter = require("./routes/attempts");
 
+const appointmentRouter = require("./routes/appointments/appointments");
+
+const adminImageRouter = require('./routes/admin/images');
+
+const notesRouter = require('./routes/notes/files');
+
+const postsRouter = require('./routes/posts/posts');
+
 app.use((req, res, next) =>{
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
@@ -222,21 +230,23 @@ app.post('/postRegData', bodyParser.json(), (req, res) => {
     });
    }
 
-   if (registerItem == 'student'){
+   else if (registerItem == 'student'){
 
-    const regDocument = db.doc('users/'+id) 
+    const regDocument = db.doc('users/'+id);
+    console.log(regDocument +' user createed '+id );
     regDocument.set({
       email: req.body['email'],
       role: req.body['registerItem'],
-      firstname: req.body['firstName'],
-      lastname: req.body['lastName'],
-      create: admin.firestore.FieldValue.serverTimestamp().toString(),
+      firstname: req.body['firstname'],
+      lastname: req.body['lastname'],
+      // create: admin.firestore.FieldValue.serverTimestamp().toString(),
       verify: 'assets/verification/not_verified.png',
       adminFeatures: false,
       img_url:'',
       contact: req.body['contact']
     });
      const document = db.doc('student/'+id);
+    console.log('student createed')
      document.set({
        verify: 'assets/verification/not_verified.png',
        email: req.body['email'],
@@ -765,188 +775,199 @@ app.get('/getAllClasses/institute', (req, res) => {
     res.status(500).json('Error getting document: '+ err);
 });
 })
-  //delete Post
-app.post('/deletePosts', bodyParser.json(), (req, res) => {
-  let deleteDoc = db.collection('posts').doc(req.body['idValue']).delete()
-  .then(function() {
-    console.log('Document successfully Deleted!');
-    res.json({status:200});
+//   //delete Post
+// app.post('/deletePosts', bodyParser.json(), (req, res) => {
+//   let deleteDoc = db.collection('posts').doc(req.body['idValue']).delete()
+//   .then(function() {
+//     console.log('Document successfully Deleted!');
+//     res.json({status:200});
 
-  })
-  .catch(function(error) {
-    res.json({status:400}); 
-    console.error('Error writing document: ', error);
-  });
-})
+//   })
+//   .catch(function(error) {
+//     res.json({status:400}); 
+//     console.error('Error writing document: ', error);
+//   });
+// })
   
-  //Update Post
-  app.post('/uploadposts/update', bodyParser.json(), (req, res) => {
-  id = req.body['id'];
-  // console.log('afdsf '+req.body);
-  const document = db.doc('posts/'+id);
-  document.update({
-    title: req.body['title'],
-    description: req.body['description'],
-    city: req.body['city'],
-    district: req.body['district'],
-    contact: req.body['contact']
-  },{merge:true})
-  .then(function() {
-    res.json({status:200});
-    console.log('Document successfully written!');
-  })
-  .catch(function(error) {
-      console.error('Error writing document: ', error);
-      res.json({status:400});
-  });
+//   //Update Post
+//   app.post('/uploadposts/update', bodyParser.json(), (req, res) => {
+//   id = req.body['id'];
+//   // console.log('afdsf '+req.body);
+//   const document = db.doc('posts/'+id);
+//   document.update({
+//     title: req.body['title'],
+//     description: req.body['description'],
+//     city: req.body['city'],
+//     district: req.body['district'],
+//     contact: req.body['contact']
+//   },{merge:true})
+//   .then(function() {
+//     res.json({status:200});
+//     console.log('Document successfully written!');
+//   })
+//   .catch(function(error) {
+//       console.error('Error writing document: ', error);
+//       res.json({status:400});
+//   });
 
-})
+// })
 
 
-app.post('/uploadFiles',bodyParser.json(),(req,res) =>{
-  id = req.body['id'];
-  email = req.body['email'];
+// app.post('/uploadFiles',bodyParser.json(),(req,res) =>{
+//   id = req.body['id'];
+//   email = req.body['email'];
   
-  var collection = db.collection('users');
-  collection.where('email', "==", email).get().then(snapshot =>{
-    snapshot.forEach(doc =>{
-      firstname = doc.data().firstname;
-      lastname = doc.data().lastname;
-      let vale = `${firstname} ${lastname}`;
-      let proPic = doc.data().img_url;
-      let verify = doc.data().verify;
+//   var collection = db.collection('users');
+//   collection.where('email', "==", email).get().then(snapshot =>{
+//     snapshot.forEach(doc =>{
+//       firstname = doc.data().firstname;
+//       lastname = doc.data().lastname;
+//       let vale = `${firstname} ${lastname}`;
+//       let proPic = doc.data().img_url;
+//       let verify = doc.data().verify;
 
-      const document = db.doc('notes/'+id);
-      document.set({
-        title: req.body['title'],
-        email: req.body['email'],
-        grade: req.body['grade'],
-        subject: req.body['subject'],
-        name: vale,
-        verify: verify,
-        proPic: proPic,
-        description: req.body['description'],
-        path: req.body['path'],
-        create: admin.firestore.FieldValue.serverTimestamp()
+//       const document = db.doc('notes/'+id);
+//       document.set({
+//         title: req.body['title'],
+//         email: req.body['email'],
+//         grade: req.body['grade'],
+//         subject: req.body['subject'],
+//         name: vale,
+//         verify: verify,
+//         proPic: proPic,
+//         description: req.body['description'],
+//         path: req.body['path'],
+//         create: admin.firestore.FieldValue.serverTimestamp()
         
-      })
-      .then(function() {
-        console.log('Document successfully written!');
-        res.json({status:200})
-      })
-      .catch(function(error) {
-        res.json({status:400});
-        console.error('Error writing document: ', error);
-      });
-    });               
-    res.json({status:200});
-  }).catch(err =>{
-      res.json({status:400});
-      res.status(500).json('Error getting document: '+ err);
-  });  
-});
+//       })
+//       .then(function() {
+//         console.log('Document successfully written!');
+//         res.json({status:200})
+//       })
+//       .catch(function(error) {
+//         res.json({status:400});
+//         console.error('Error writing document: ', error);
+//       });
+//     });               
+//     res.json({status:200});
+//   }).catch(err =>{
+//       res.json({status:400});
+//       res.status(500).json('Error getting document: '+ err);
+//   });  
+// });
 
 
-//get all users for person search
-app.get('/getNotes', (req, res) => {
-  let userDetails=[];
-  var collection = db.collection('notes');
-  collection.get().then(snapshot =>{
-    snapshot.forEach(doc =>{
-        userDetails.push({id: doc.id, data: doc.data()});
-    });                        
-    res.status(200).json(userDetails);  
+// //get all users for person search
+// app.get('/getNotes', (req, res) => {
+//   let userDetails=[];
+//   var collection = db.collection('notes');
+//   collection.get().then(snapshot =>{
+//     snapshot.forEach(doc =>{
+//         userDetails.push({id: doc.id, data: doc.data()});
+//     });                        
+//     res.status(200).json(userDetails);  
 
-  }).catch(err =>{
-      res.status(500).json('Error getting document: '+ err);
-  });
-})
+//   }).catch(err =>{
+//       res.status(500).json('Error getting document: '+ err);
+//   });
+// })
 
 
-//Request an appointment
-app.post('/makeAppointment', bodyParser.json(), (req, res) => {
-  email = req.body['userEmail'];
-  ee = req.body['email'];
-  let userd = [];
-  var collection = db.collection('users');
-  collection.where('email', "==", email).get().then(snapshot =>{
-    snapshot.forEach(doc1 =>{
-      id = doc1.id;
-      firstname = doc1.data().firstname;
-      lastname = doc1.data().lastname;
-      let vale = `${firstname} ${lastname}`;
-      let proPic = doc1.data().img_url;
-      console.log(id);
+// //Request an appointment
+// app.post('/makeAppointment', bodyParser.json(), (req, res) => {
+//   studentEmail = req.body['studentEmail'];
+//   instructorEmail = req.body['instructorEmail']
+//   let userd = [];
+//   var collection = db.collection('users');
+//   collection.where('email', "==", studentEmail).get().then(snapshot =>{
+//     snapshot.forEach(doc1 =>{
+//       id = doc1.id;
 
-      let cityRef = db.collection('appointments').doc(id);
-      let getDoc = cityRef.get()
-        .then(doc2 => {
-          if (!doc2.exists) {
-            userDetails ={
-              topic: req.body['topic'],
-              description: req.body['description']
-            };
-            this.userd = [{ userDetails}];
-          } else {
-            this.userd = doc2.data();
-            console.log(this.userd+ 'eamil is here');            
-            this.userd.push({
-                topic:req.body['topic'],
-                description:req.body['description'],
-              });
-            }
-            const document = db.doc('appointments/'+id);
-            document.set({
-              email: req.body['email'],
-              content: this.userd
+//       var collection = db.collection('users');
+//       collection.where('email', "==", instructorEmail).get().then(snapshot =>{
+//         snapshot.forEach(doc3 =>{
+
+//         firstname = doc3.data().firstname;
+//         lastname = doc3.data().lastname;
+//         let vale = `${firstname} ${lastname}`;
+//         let proPic = doc3.data().img_url;
+
+//         let cityRef = db.collection('appointments').doc(id);
+//         let getDoc = cityRef.get()
+//           .then(doc2 => {
+//             if (!doc2.exists) {
+//               this.userd = [{ 
+//                 name: vale,
+//                 img_url: proPic,
+//                 topic: req.body['topic'],
+//                 description: req.body['description'],
+//                 email: req.body['instructorEmail'],
+//                 create: admin.firestore.FieldValue.serverTimestamp()
+//               },
+//             ];
+
+//             } else {
+//               this.userd = doc2.data().content;          
+//               this.userd.push({
+//                   name: vale,
+//                   img_url: proPic,
+//                   topic:req.body['topic'],
+//                   description:req.body['description'],
+//                   email: req.body['instructorEmail'],
+//                   create: admin.firestore.FieldValue.serverTimestamp()
+//                 });
+//               }
+//               const document = db.doc('appointments/'+id);
+//               document.set({
+//                 content: this.userd              
+//               },{merge:true})
               
-              // content: content.push(req.body['content']),
-            },{merge:true})
-            
-            .then(function() {
-              console.log('Document successfully Updated!');
-              res.json({status:200});
-      
-            })
-            .catch(function(error) {
-              res.json({status:400}); 
-              console.error('Error writing document: ', error);
-            });          
-        })
-        .catch(err => {
-          console.log('Error getting document', err);
-        });
-    })
-  });
-});  
+//               .then(function() {
+//                 console.log('Document successfully Updated!');
+//                 res.json({status:200});
+        
+//               })
+//               .catch(function(error) {
+//                 res.json({status:400}); 
+//                 console.error('Error writing document: ', error);
+//               });          
+//           })
+//           .catch(err => {
+//             console.log('Error getting document', err);
+//           });
+//         })
+//       });   
+//     })
+//   });
+// });  
 
-app.post('/getAppointments', bodyParser.json(), (req, res) => {
-  let userDetails=[];
-  email = req.body['email'];
-  var collection = db.collection('users');
-  collection.where('email', "==", email).get().then(snapshot =>{
-    snapshot.forEach(doc =>{
-      id = doc.id;
-      console.log(id);
-      let cityRef = db.collection('appointments').doc(id);
-      let getDoc = cityRef.get()
-        .then(doc2 => {
-          userDetails.push({id: doc2.id, data: doc2.data()});
-          res.status(200).json(userDetails);  
-        })
-        .catch(err => {
-          console.log('Error getting document', err);
-        });
-
+// app.post('/getAppointments', bodyParser.json(), (req, res) => {
+//   let userDetails=[];
+//   email = req.body['email'];
+//   var collection = db.collection('users');
+//   collection.where('email', "==", email).get().then(snapshot =>{
+//     snapshot.forEach(doc =>{
+//       id = doc.id;
+//       console.log(id);
+//       let cityRef = db.collection('appointments').doc(id);
+//       let getDoc = cityRef.get()
+//         .then(doc2 => {
+//           userDetails.push({id: doc2.id, data: doc2.data()});
+//           res.status(200).json(userDetails);  
+//         })
+//         .catch(err => {
+//           console.log('Error getting document', err);
+//         });
 
 
-    });                        
-    // res.status(200).json(userDetails);  
 
-  }).catch(err =>{
-      res.status(500).json('Error getting document: '+ err);
-  });
-})
+//     });                        
+//     // res.status(200).json(userDetails);  
+
+//   }).catch(err =>{
+//       res.status(500).json('Error getting document: '+ err);
+//   });
+// })
 
 
 
@@ -960,6 +981,18 @@ app.use("/questions", questionRouter);
 app.use("/users", userRouter);
 app.use("/subjects", subjectRouter);
 app.use("/attempts", attemptRouter);
+
+app.use('/appointments', appointmentRouter); 
+
+app.use('/admin/images', adminImageRouter);
+
+app.use('/notes', notesRouter);
+
+app.use('./posts', postsRouter);
+
+app.get('*', (req,res) => {
+  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
+});
   
 // Handling routing if no matching url is not found
 app.use((req, res, next) =>{
@@ -977,6 +1010,3 @@ app.use((error, req, res, next) => {
       }
   });
 });
-// app.get('*', (req,res) => {
-//   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
-// });

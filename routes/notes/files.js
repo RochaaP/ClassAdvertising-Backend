@@ -52,7 +52,7 @@ router.post('/uploadFiles',bodyParser.json(),(req,res) =>{
   });
   
   
-  //get all users for person search
+  //get all users for instructor search
   router.get('/getNotes', (req, res) => {
     let userDetails=[];
     var collection = db.collection('notes');

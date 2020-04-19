@@ -15,7 +15,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
     
     registerItem = req.body['registerItem'];
  
-    if (registerItem == 'person'){
+    if (registerItem == 'instructor'){
  
     const regDocument = db.doc('users/'+id) 
     regDocument.set({

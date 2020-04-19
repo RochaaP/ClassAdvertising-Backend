@@ -9,7 +9,7 @@ let db = admin.firestore();
 // Get all users
 router.get('/getAll', (req, res) => {
     let userDetails=[];
-    var collection = db.collection('users').where('role', '==', 'person');
+    var collection = db.collection('users').where('role', '==', 'instructor');
     collection.get().then(snapshot =>{
       snapshot.forEach(doc =>{
           userDetails.push({id: doc.id, data: doc.data()});

@@ -193,7 +193,4 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
   });
 })
  
-
-
-
 module.exports = router;

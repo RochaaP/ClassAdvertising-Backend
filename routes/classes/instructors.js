@@ -11,7 +11,7 @@ let db = admin.firestore();
 //get all users for instructor search
 router.get('/all', (req, res) => {
     let userDetails=[];
-    var collection = db.collection('PersonClasses');
+    var collection = db.collection('InstructorClasses');
     collection.get().then(snapshot =>{
         snapshot.forEach(doc =>{
             userDetails.push({id: doc.id, data: doc.data()});
@@ -27,7 +27,7 @@ router.get('/all', (req, res) => {
 router.post('/individual', bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     let userDetails=[];
-    var collection = db.collection('PersonClasses').where('email','==',email);
+    var collection = db.collection('InstructorClasses').where('email','==',email);
     collection.get().then(snapshot =>{
         snapshot.forEach(doc =>{
             userDetails.push({id: doc.id, data: doc.data()});
@@ -48,7 +48,7 @@ router.post('/add', bodyParser.json(), (req, res) => {
         var name = doc.data().firstname + ' '+doc.data().lastname;;
         
             id = req.body['id'];
-            const document = db.doc('PersonClasses/'+id);
+            const document = db.doc('InstructorClasses/'+id);
             document.set({
                 email: req.body['email'],
                 registerItem: req.body['registerItem'],

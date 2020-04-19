@@ -20,11 +20,10 @@ router.get("/", (req, res, next) =>{
             snapshot.forEach(doc =>{
                 let name = doc.data().firstname + " " + doc.data().lastname;
                 instructors.push({id: doc.id, name: name});
-                console.log();
             });  
         }).catch(err =>{
-            console.log('Error getting subject documents', err);
-            const error = new Error('Error getting subject documents', err);
+            console.log('Error getting user documents', err);
+            const error = new Error('Error getting user documents', err);
             error.status = 500;
             next(error);
         });                       

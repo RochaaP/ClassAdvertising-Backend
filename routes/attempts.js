@@ -54,10 +54,14 @@ router.delete("/:id", (req, res, next) =>{
     attemptRef.docs(id).delete().then(onfulfilled =>{
         res.status(200).json({data: onfulfilled, status: true})
     },
-    onRejected =>{
-        res.status(500).json({data: onRejected, status: false})
-    }).catch(err =>{
-        res.status(500).json('Error getting question document: '+ err);
+    onRejected =>{        
+        const error = new Error(onRejected);
+        error.status = 500;
+        next(error);
+    }).catch(err =>{        
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 

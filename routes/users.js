@@ -17,7 +17,40 @@ router.get("/", (req, res, next) =>{
         res.status(200).json(users);
     }).catch(err =>{
         console.log('Error getting user documents', err);
-        res.status(500).json('Error getting user documents', err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
+    });
+});
+
+// Get user by email
+router.post("/byEmail/", (req, res, next) =>{
+    console.log("Mtute-User byEmail");
+    console.log(req.body.email);
+    userRef.where("email", "==", req.body.email).get().then(docs =>{
+        let users = [];
+        docs.forEach(doc=>{
+            users.push({id: doc.id, data: doc.data()})
+        })
+        console.log(users.length);
+        if(users.length==0){
+            const error = new Error("No registered user with corresponding email");
+            error.status = 500;
+            next(error);
+        }
+        else if(users.length == 1){
+            res.status(200).json(users[0]);
+        }   
+        else{
+            const error = new Error("There should be only one doc for an email");
+            error.status = 500;
+            next(error);
+        }  
+    }).catch(err =>{
+        console.log('Error getting user documents', err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -36,7 +69,10 @@ router.get("/:id", (req, res, next) =>{
             res.status(200).json({id: doc.id, data: doc.data()});
         }     
     }).catch(err =>{
-        res.status(500).json('Error getting user document: '+ err);
+        console.log('Error getting user document: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -47,10 +83,15 @@ router.delete("/:id", (req, res, next) =>{
     userRef.doc(id).delete().then(onfulfilled =>{
         res.status(200).json({data: onfulfilled, status: true})
     },
-    onRejected =>{
-        res.status(500).json({data: onRejected, status: false})
+    onRejected =>{        
+        const error = new Error(onRejected);
+        error.status = 500;
+        next(error);
     }).catch(err =>{
-        res.status(500).json('Error getting user document: '+ err);
+        console.log('Error getting user document: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 

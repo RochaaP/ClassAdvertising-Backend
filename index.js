@@ -90,6 +90,7 @@ let db = admin.firestore();
 // var routes = require('./routes/');
 
 // app.use('/api', routes);
+const devRouter = require("./routes/dev");
 const paperRouter = require("./routes/papers");
 const questionRouter = require("./routes/questions");
 const userRouter = require("./routes/users");
@@ -970,12 +971,10 @@ app.get('/getAllClasses/institute', (req, res) => {
 // })
 
 
-
-
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.use("/dev", devRouter); // This router will be used only for development process
 app.use("/papers", paperRouter);
 app.use("/questions", questionRouter);
 app.use("/users", userRouter);
@@ -1009,4 +1008,8 @@ app.use((error, req, res, next) => {
           message: error.message
       }
   });
+});
+
+app.use('*', (req,res) => {
+  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
 });

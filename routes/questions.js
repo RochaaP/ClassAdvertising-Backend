@@ -35,7 +35,9 @@ router.get("/paper/:paperId", (req, res, next) =>{
         });                        
         res.status(200).json(questions);   
     }).catch(err =>{
-        res.status(500).json('Error getting question document by Paper Id: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -54,7 +56,9 @@ router.get("/id/:id", (req, res, next) =>{
             res.status(200).json({id: doc.id, data: doc.data()});
         }     
     }).catch(err =>{
-        res.status(500).json('Error getting question document: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -68,7 +72,9 @@ router.delete("/:id", (req, res, next) =>{
     onRejected =>{
         res.status(500).json({data: onRejected, status: false})
     }).catch(err =>{
-        res.status(500).json('Error getting question document: '+ err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 

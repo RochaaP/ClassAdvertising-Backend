@@ -17,7 +17,9 @@ router.get("/", (req, res, next) =>{
         res.status(200).json(papers);
     }).catch(err =>{
         console.log('Error getting paper documents', err);
-        res.status(500).json('Error getting paper documents', err);
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
     });
 });
 
@@ -117,7 +119,7 @@ router.post("/subjects/",async (req, res, next) =>{
         await subjectArray.forEach(async (element,index, array) => {
             console.log("Subject Id: " + element);
             let sub_papers = [];
-            await paperRef.where("subject", "==", element).get().then(snapshot =>{
+            await paperRef.where("subject", "==", element).where("published", "==", true).get().then(snapshot =>{
                 snapshot.forEach(doc =>{
                     sub_papers.push({id: doc.id, data: doc.data()});
                 });

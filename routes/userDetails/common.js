@@ -26,7 +26,8 @@ router.post('/register', bodyParser.json(), (req, res) => {
       create: admin.firestore.FieldValue.serverTimestamp().toString(),
       verify: 'assets/verification/not_verified.png',
       adminFeatures: false,
-      img_url:''
+      img_url:'',
+      metaData:''
     });
      const document = db.doc('instructor/'+id);
      document.set({
@@ -40,6 +41,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
        grad: '',
        profileImagePath: '',
        backgroundImagePath: '',
+       backgroundMetaData: '',
        yearExperiences: '',
        teachingSchool: '',
  
@@ -83,7 +85,8 @@ router.post('/register', bodyParser.json(), (req, res) => {
        create: admin.firestore.FieldValue.serverTimestamp(),
        verify: 'assets/verification/not_verified.png',
        adminFeatures: false,
-       img_url:''
+       img_url:'',
+       metaData: ''
      });
  
      const document = db.doc('institute/'+id);
@@ -109,16 +112,17 @@ router.post('/register', bodyParser.json(), (req, res) => {
  
     else if (registerItem == 'student'){
  
-     const regDocument = db.doc('users/'+id);
+     const regDocument = db.doc('users/'+id)
      regDocument.set({
        email: req.body['email'],
        role: req.body['registerItem'],
-       firstname: req.body['firstname'],
-       lastname: req.body['lastname'],
-       // create: admin.firestore.FieldValue.serverTimestamp().toString(),
+       firstname: req.body['firstName'],
+       lastname: req.body['lastName'],
+       create: admin.firestore.FieldValue.serverTimestamp(),
        verify: 'assets/verification/not_verified.png',
        adminFeatures: false,
        img_url:'',
+       metaData: '',
        contact: req.body['contact']
      });
       const document = db.doc('student/'+id);

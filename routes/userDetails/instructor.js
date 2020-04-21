@@ -56,7 +56,8 @@ router.post('/update', bodyParser.json(), (req, res) => {
         firstname: req.body['firstName'],
         lastname: req.body['lastName'],
         contact: req.body['contact'],
-        img_url: req.body['img_url']
+        img_url: req.body['img_url'],
+        metaData: req.body['metaData']
     },{merge:true});
     
     const document2  = db.doc('instructor/'+id);
@@ -67,6 +68,7 @@ router.post('/update', bodyParser.json(), (req, res) => {
         grad: req.body['grad'],
         degreeYear: req.body['degreeYear'],
         backgroundImagePath: req.body['backgroundImagePath'],
+        backgroundMetaData: req.body['backgroundMetaData'],
         yearExperiences: req.body['yearExperiences'],
         teachingSchool: req.body['teachingSchool'],
 

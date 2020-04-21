@@ -54,6 +54,7 @@ router.post('/update', bodyParser.json(), (req, res) => {
         firstname: req.body['firstname'],
         contact: req.body['contact'],
         img_url: req.body['img_url'],
+        metaData: req.body['metaData']
     
     },{merge:true});
   
@@ -64,7 +65,8 @@ router.post('/update', bodyParser.json(), (req, res) => {
         city: req.body['city'],
         district: req.body['district'],
         province: req.body['province'],
-        backgroundImagePath: req.body['backgroundImagePath']
+        backgroundImagePath: req.body['backgroundImagePath'],
+        backgroundMetaData: req.body['backgroundMetaData']
   
     },{merge:true})
     .then(function() {

@@ -98,7 +98,8 @@ router.post('/register', bodyParser.json(), (req, res) => {
        city: '',
        district: '',
        province: '',
-       backgroundImagePath: ''
+       backgroundImagePath: '',
+       backgroundMetaData: ''
      })
      .then(function() {
        console.log('Institute successfully registered!');

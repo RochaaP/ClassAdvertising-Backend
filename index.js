@@ -8,7 +8,7 @@ const app = express();
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log('mtute.lk listening on port 3000!'))
-// app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
+app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
 
 
 const admin = require('firebase-admin');
@@ -18,7 +18,8 @@ admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 let db = admin.firestore();
 
-// const devRouter = require("./routes/dev");
+const devRouter = require("./routes/dev");
+const zoomRouter = require("./routes/zoom");
 const paperRouter = require("./routes/papers");
 const questionRouter = require("./routes/questions");
 const userRouter = require("./routes/users");
@@ -57,7 +58,8 @@ app.use((req, res, next) =>{
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// app.use("/dev", devRouter); // This router will be used only for development process
+app.use("/dev", devRouter); // This router will be used only for development process
+app.use("/zoom", zoomRouter);
 app.use("/papers", paperRouter);
 app.use("/questions", questionRouter);
 app.use("/users", userRouter);

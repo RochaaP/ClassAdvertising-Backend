@@ -27,7 +27,8 @@ router.post('/register', bodyParser.json(), (req, res) => {
       verify: 'assets/verification/not_verified.png',
       adminFeatures: false,
       img_url:'',
-      metaData:''
+      metaData:'',
+      contact: req.data['contact']
     });
      const document = db.doc('instructor/'+id);
      document.set({

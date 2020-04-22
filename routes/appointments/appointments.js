@@ -179,8 +179,17 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
       let cityRef = db.collection('appointmentsista').doc(id);
       let getDoc = cityRef.get()
         .then(doc2 => {
-          userDetails.push({id: doc2.id, data: doc2.data()});
-          res.status(200).json(userDetails);  
+          if(doc == undefined){
+            console.log("Not available");
+            const error = new Error("There is no user with " + id);
+            error.status = 500;
+            res.status(200).json('no such doc '+error);
+            next(error);
+          }  
+          else{
+            userDetails.push({id: doc2.id, data: doc2.data()});
+            res.status(200).json(userDetails);  
+          }  
         })
         .catch(err => {
           console.log('Error getting document', err);

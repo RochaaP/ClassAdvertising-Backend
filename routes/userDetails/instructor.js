@@ -23,7 +23,7 @@ router.get('/getAll', (req, res) => {
   
 
 
-//get details 
+//get details  individuals
 router.post('/get',bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     let userDetails = [];

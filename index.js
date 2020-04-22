@@ -8,7 +8,7 @@ const app = express();
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log('mtute.lk listening on port 3000!'))
-app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
+// app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
 
 
 const admin = require('firebase-admin');

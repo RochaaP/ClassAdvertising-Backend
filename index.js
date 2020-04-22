@@ -79,9 +79,9 @@ app.use('/classes/instructor', instructorClassesRouter);
 app.use('/classes/institute', instituteClassesRouter);
 
 
-app.get('*', (req,res) => {
-  res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
-});
+// app.get('*', (req,res) => {
+//   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));
+// });
   
 // Handling routing if no matching url is not found
 app.use((req, res, next) =>{

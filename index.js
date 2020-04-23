@@ -3,11 +3,13 @@ const express = require('express');
 const http = require('http');
 const path = require('path'); 
 const logger = require('morgan');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log('mtute.lk listening on port 3000!'))
+app.use(cors());
 app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
 
 

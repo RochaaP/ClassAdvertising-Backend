@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const http = require("http");
-const https = require("https");
 const axios = require('axios');
 
 const ZOOM_CLIENT_ID = "iLcPUG6S9iCPDJPxelsnA";
@@ -17,37 +16,70 @@ router.get("/", (req, res, next) =>{
     });
 });
 
-// POST attempts
-router.post("/", (req, res, next) =>{    
-    console.log("Mtute-Zoom");
-    console.log(req.body);
-    res.status(200).json({
-        "Message": "Connected to mtute.lk ZOOM"
-    });
-});
-
-// This will be called by the UI
-router.get("/zoomLogin", (req, res, next) =>{
-    console.log("Mtute-Zoom LOGIN");
-    http.get("http://zoom.us/oauth/authorize?response_type=code&client_id=" + ZOOM_CLIENT_ID + "&redirect_uri=" + redirect_URL);
-    res.status(200).json({"message": "Authorizing..."});
-});
-
 // This will be called by the zoom server
 router.get("/accessToken/:code", (req, res, next) =>{ 
-    console.log("Mtute-Zoom LOGIN Code"); 
-    res.header("Authorization", authorizationCode);
+    console.log("Mtute-Zoom accessToken"); 
+    const headers = {
+        "Authorization": authorizationCode,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Expose-Headers': '*',
+        'Access-Control-Allow-Credentials': 'true'
+      }
     let code = req.params.code;
-    axios.get("http://zoom.us/oauth/token?grant_type=authorization_code&code=" + code + "&redirect_uri=" + redirect_URL);
-    res.status(200).json({"message": "Requesting access token..."});
+    axios.post("http://zoom.us/oauth/token?grant_type=authorization_code&code=" + code + "&redirect_uri=" + redirect_URL, {}, headers)
+      .then(function (response) {
+        console.log(response);
+        res.status(200).json(response);
+      })
+      .catch(function (err) {
+        console.log(error);
+        const error = new Error(err);
+        next(error);
+      });
 });
 
 // This will be called by the zoom server
-router.post("/accessToken/", (req, res, next) =>{ 
-    console.log("Mtute-Zoom LOGIN Token"); 
-    token = req.body["access_token"];
-    axios.post("http://localhost:4200/", req.body);    
-    res.status(200).json({"message": "Sending access token..."});
+router.get("/userDetails/:token", (req, res, next) =>{ 
+    console.log("Mtute-Zoom userDetails"); 
+    let token = req.params.token;
+    const headers = {
+        "Authorization": `Bearer ${token}`,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Expose-Headers': '*',
+        'Access-Control-Allow-Credentials': 'true'
+      }
+    axios.get("https://api.zoom.us/v2/users/me", headers)
+      .then(function (response) {
+        console.log(response);
+        res.status(200).json(response);
+      })
+      .catch(function (err) {
+        console.log(error);
+        const error = new Error(err);
+        next(error);
+      });
+});
+
+// This will be called by the zoom server
+router.get("/getMeetingList/:token", (req, res, next) =>{ 
+    console.log("Mtute-Zoom getMeetingList"); 
+    let token = req.params.token;
+    const headers = {
+        "Authorization": `Bearer ${token}`,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Expose-Headers': '*',
+        'Access-Control-Allow-Credentials': 'true'
+      }
+    axios.get("https://api.zoom.us/v2/users/me/meetings", headers)
+      .then(function (response) {
+        console.log(response);
+        res.status(200).json(response);
+      })
+      .catch(function (err) {
+        console.log(error);
+        const error = new Error(err);
+        next(error);
+      });
 });
 
 module.exports = router;

@@ -9,8 +9,12 @@ const app = express();
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log('mtute.lk listening on port 3000!'))
+<<<<<<< HEAD
 app.use(cors());
 app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
+=======
+// app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
+>>>>>>> d0d71bb7dfd8f56b11badc515da43329ac05389a
 
 
 const admin = require('firebase-admin');
@@ -29,8 +33,6 @@ const subjectRouter = require("./routes/subjects");
 const attemptRouter = require("./routes/attempts");
 
 const appointmentRouter = require("./routes/appointments/appointments");
-const appointmentTempRouter = require("./routes/appointments/temp");
-
 
 const adminImageRouter = require('./routes/admin/images');
 const adminVerifyRouter = require('./routes/admin/verify');
@@ -76,9 +78,6 @@ app.use('/admin/verify', adminVerifyRouter);
 app.use('/userDetails', userDetailsRouter);
 
 app.use('/appointments', appointmentRouter); 
-app.use('/temp/appointments', appointmentTempRouter); 
-
-
 app.use('/notes', notesRouter);
 app.use('/posts', postsRouter);
 

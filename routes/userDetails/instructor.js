@@ -105,3 +105,53 @@ router.post('/update', bodyParser.json(), (req, res) => {
 
 
 module.exports = router;
+// router.post('/makeAppointment',bodyParser.json(),(req,res) =>{
+//     console.log('yes')
+//     userDetails = [req.body['content']];
+//     studentEmail =  req.body['studentEmail'],
+//     instructorEmail = req.body['instructorEmail']    
+//     let addDoc = db.collection('temp')
+//         .where('instructorEmail', '==', instructorEmail)
+//         .where('studentEmail', '==', studentEmail).get().then(snapshot =>{
+//             snapshot.forEach(doc =>{
+//                 console.log('ues');
+//                 if(!doc.exists){
+//                     // userDetails = [req.body['content']];
+//                     console.log('user doc does not extit');
+//                     let addDoc = db.collection('temp').add({
+//                         content: userDetails,
+//                         studentEmail: req.body['studentEmail'],
+//                         instructorEmail: req.body['instructorEmail']    
+//                     }).then(ref => {
+//                         console.log('Added document with ID: ', ref.id);
+//                     }).catch(err => {
+//                         res.status(500).json(err);
+//                     })
+//                 }
+//                 else {
+//                     console.log('user doc extit');
+//                     this.userd = doc.data().content;
+//                     console.log(this.userd);          
+//                     this.userd.push(req.body['content']);
+//                     let updateRef = db.collection('temp').doc(doc.id);
+//                     console.log(doc.id);
+//                     // Set the 'capital' field of the city
+//                     updateRef.set({
+//                         content: this.userd
+//                     },{merge:true})
+//                     .then(
+//                         console.log('documetn updated')
+//                     )
+//                 }
+//                 });                        
+//                 // res.status(200).json(userDetails);   
+//             }).catch(err =>{
+//                 res.status(500).json('Error getting document: '+ err);
+//             })
+//         // content: userDetails,
+//         // studentEmail: req.body['studentEmail'],
+//     //     // instructorEmail: req.body['instructorEmail']    
+//     //   }).then(ref => {
+//     //     // console.log('Added document with ID: ', ref.id);
+//     //   });
+// });

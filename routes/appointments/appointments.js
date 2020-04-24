@@ -43,24 +43,28 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
     var collection = db.collection('users');
     collection.where('email', "==", studentEmail).get().then(snapshot =>{
       snapshot.forEach(doc1 =>{
-        id = doc1.id;
+        idStu = doc1.id;
+        // firstnameStu = doc1.data().firstname;
+        // lastnameStu = doc1.data().lastname;
+        // let valeStu = `${firstnameStu} ${lastnameStu}`;
+        // let proPicStu = doc1.data().img_url;
   
         var collection = db.collection('users');
         collection.where('email', "==", instructorEmail).get().then(snapshot =>{
           snapshot.forEach(doc3 =>{
+          idInst = doc3.id;
+          firstnameInst = doc3.data().firstname;
+          lastnameInst = doc3.data().lastname;
+          let valeInst = `${firstnameInst} ${lastnameInst}`;
+          let proPicInst = doc3.data().img_url;
   
-          firstname = doc3.data().firstname;
-          lastname = doc3.data().lastname;
-          let vale = `${firstname} ${lastname}`;
-          let proPic = doc3.data().img_url;
-  
-          let cityRef = db.collection('appointments').doc(id);
+          let cityRef = db.collection('appointments').doc(idStu);
           let getDoc = cityRef.get()
             .then(doc2 => {
               if (!doc2.exists) {
                 this.userd = [{ 
-                  name: vale,
-                  img_url: proPic,
+                  name: valeInst,
+                  img_url: proPicInst,
                   topic: req.body['topic'],
                   description: req.body['description'],
                   email: req.body['instructorEmail'],
@@ -70,14 +74,14 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
               } else {
                 this.userd = doc2.data().content;          
                 this.userd.push({
-                    name: vale,
-                    img_url: proPic,
+                    name: valeInst,
+                    img_url: proPicInst,
                     topic:req.body['topic'],
                     description:req.body['description'],
                     email: req.body['instructorEmail'],
                   });
                 }
-                const document = db.doc('appointments/'+id);
+                const document = db.doc('appointments/'+idStu);
                 document.set({
                   content: this.userd              
                 },{merge:true})
@@ -121,7 +125,7 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
           let vale = `${firstname} ${lastname}`;
           let proPic = doc3.data().img_url;
   
-          let cityRef = db.collection('appointmentsista').doc(id);
+          let cityRef = db.collection('appointmentsista').doc(doc1.id);
           let getDoc = cityRef.get()
             .then(doc2 => {
               if (!doc2.exists) {
@@ -130,7 +134,7 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
                   img_url: proPic,
                   topic: req.body['topic'],
                   description: req.body['description'],
-                  email: req.body['instructorEmail'],
+                  email: req.body['studentEmail'],
                 },
               ];
   
@@ -141,10 +145,10 @@ router.post('/makeAppointment', bodyParser.json(), (req, res) => {
                     img_url: proPic,
                     topic:req.body['topic'],
                     description:req.body['description'],
-                    email: req.body['instructorEmail'],
+                    email: req.body['studentEmail'],
                   });
                 }
-                const document = db.doc('appointmentsista/'+id);
+                const document = db.doc('appointmentsista/'+doc1.id);
                 document.set({
                   content: this.userd              
                 },{merge:true})
@@ -176,6 +180,7 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
   collection.where('email', "==", email).get().then(snapshot =>{
     snapshot.forEach(doc =>{
       id = doc.id;
+      console.log(id);
       let cityRef = db.collection('appointmentsista').doc(id);
       let getDoc = cityRef.get()
         .then(doc2 => {
@@ -202,4 +207,58 @@ router.post('/getAppointments/instructor', bodyParser.json(), (req, res) => {
   });
 })
  
+
+
+//update details
+router.post('/makeAppointment/instructor/reply', bodyParser.json(), (req, res) => {
+  console.log(req.body);
+  studentEmail = req.body['studentEmail'];
+  instructorEmail = req.body['instructorEmail']
+  // let userd = [];
+  var collection = db.collection('users');
+  collection.where('email', "==", instructorEmail).get().then(snapshot =>{
+    snapshot.forEach(doc1 =>{
+      idInst = doc1.id;
+  
+
+      // let cityRef = db.collection('appointmentsista').doc('sdlfjgsdfj');
+      // let getDoc = cityRef.set()
+      //   .then(doc2 => {
+      //       this.userd = doc2.data().content;          
+      //       this.userd.push({
+      //         conte: req.body['content']
+      //       },{merge:true})
+            
+            const document = db.doc('appoi/'+idInst);
+            document.set({
+              content: this.userd              
+            },{merge:true})
+            
+            .then(function() {
+              console.log('Appointment successfully Updated!');
+              res.json({status:200});
+      
+            })
+            .catch(function(error) {
+              res.json({status:400}); 
+              console.error('Error writing document: ', error);
+            });          
+        // })
+        // .catch(err => {
+        //   console.log('Error getting document', err);
+        // });
+    });
+  });  
+});
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;

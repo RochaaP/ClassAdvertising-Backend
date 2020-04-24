@@ -27,6 +27,8 @@ const subjectRouter = require("./routes/subjects");
 const attemptRouter = require("./routes/attempts");
 
 const appointmentRouter = require("./routes/appointments/appointments");
+const appointmentTempRouter = require("./routes/appointments/temp");
+
 
 const adminImageRouter = require('./routes/admin/images');
 const adminVerifyRouter = require('./routes/admin/verify');
@@ -72,6 +74,9 @@ app.use('/admin/verify', adminVerifyRouter);
 app.use('/userDetails', userDetailsRouter);
 
 app.use('/appointments', appointmentRouter); 
+app.use('/temp/appointments', appointmentTempRouter); 
+
+
 app.use('/notes', notesRouter);
 app.use('/posts', postsRouter);
 

@@ -46,6 +46,7 @@ router.get("/instructor/:instructorId", (req, res, next) =>{
     let instructorId = req.params.instructorId;
     console.log("Mtute-Papers by InstructorId " + instructorId);   
     let papers = [];
+    console.log(req.auth);
     paperRef.where('instructor', '==', instructorId).get().then(snapshot =>{
         snapshot.forEach(doc =>{
             papers.push({id: doc.id, data: doc.data()});

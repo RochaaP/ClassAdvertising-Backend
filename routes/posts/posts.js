@@ -102,9 +102,13 @@ router.post('/add',bodyParser.json(), (req, res) => {
 
 
 // post on  newsfeed
-router.get('/all', (req, res) => {
+router.get('/all/:pageLimit', (req, res) => {
     let userDetails=[];
-    var collection = db.collection('posts').orderBy('create', 'desc');
+    let pageLimit = parseInt(req.params.pageLimit);
+    let pageCount = parseInt(req.params.pageCount);
+    
+    console.log('all/posts',pageLimit,pageCount);
+    var collection = db.collection('posts').orderBy('create', 'desc').limit(pageLimit);
     collection.get().then(snapshot =>{
       snapshot.forEach(doc =>{
           userDetails.push({id: doc.id, data: doc.data()});
@@ -113,9 +117,62 @@ router.get('/all', (req, res) => {
   
   }).catch(err =>{
       res.status(500).json('Error getting document: '+ err);
+      console.log(err);
   });
   
   })
+
+//get more postss and go back (for both)
+router.get('/more/:pageCount/:pageLimit', (req, res) => {
+  let userDetails=[];
+  
+  let pageLimit = parseInt(req.params.pageLimit);
+  let pageCount = parseInt(req.params.pageCount);
+  console.log('count',pageCount,'limit',pageLimit)
+    
+  if (pageCount == 0) {
+    pageCount = pageLimit;
+  }
+
+    var collection2 = db.collection('posts').orderBy('create', 'desc').limit(pageCount);
+    let paginate = collection2.get()
+    .then((snapshot) => {
+     
+      // ...
+
+      // Get the last document
+      let last = snapshot.docs[snapshot.docs.length - 1];
+
+      // Construct a new query starting at this document.
+      // Note: this will not have the desired effect if multiple
+      // cities have the exact same population value.
+      let next = db.collection('posts').orderBy('create','desc').startAfter(last.data().create).limit(pageLimit);
+
+      next.get().then(snapshot =>{
+        if (snapshot.empty) {
+          console.log('posts empty');
+          res.json({status:404});
+        }
+        else{
+          snapshot.forEach(doc =>{
+            userDetails.push({id: doc.id, data: doc.data()});
+          });                        
+          res.status(200).json(userDetails);  
+        }
+         
+      
+      }).catch(err =>{
+          res.status(500).json('Error getting document: '+ err);
+          console.log(err);
+      });
+
+    }).catch(err =>{
+      console.log(err)
+    }); 
+})
+
+
+
   
   //get user's posts
 router.post('/get/individual', bodyParser.json(), (req, res) => {

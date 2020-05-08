@@ -35,6 +35,7 @@ router.post('/get',bodyParser.json(), (req, res) => {
 
             let collection2 = db.collection('instructor').doc(id);
             collection2.get().then(doc2=> {
+                console.log(id);
                 userDetails.push({id:doc.id,data:doc.data(),more:doc2.data()});
                 res.status(200).json(userDetails); 
             })

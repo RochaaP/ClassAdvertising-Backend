@@ -4,6 +4,7 @@ const router = express.Router();
 const admin = require('firebase-admin');
 
 let db = admin.firestore();
+var paperRef = db.collection("papers");
 var questionRef = db.collection("questions");
 var userRef = db.collection("users");
 var studentRef = db.collection("student");
@@ -113,7 +114,7 @@ router.get("/subject", (req, res, next) =>{
 });
 
 // Devolpement usages
-router.get("/grade_level", (req, res, next) =>{
+router.get("/user_grade_level", (req, res, next) =>{
     console.log("Mtute-Users Development Mode");
     let users = [];
     userRef.get().then(snapshot =>{
@@ -158,6 +159,51 @@ router.get("/grade_level", (req, res, next) =>{
 });
 
 // Devolpement usages
+router.get("/paper_grade_level", (req, res, next) =>{
+    console.log("Mtute-Users Development Mode");
+    let papers = [];
+    paperRef.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            papers.push({id: doc.id, data: doc.data()});
+        });     
+        papers.forEach(paper=>{
+            if(paper.data.grade_level!=undefined){
+                let grade_level = paper.data.grade_level;
+                if(grade_level=="g6"){
+                    paper.data.grade_level = "Grade_6";
+                }
+                else if(grade_level=="g7"){
+                    paper.data.grade_level = "Grade_7";
+                }
+                else if(grade_level=="g8"){
+                    paper.data.grade_level = "Grade_8";
+                }
+                else if(grade_level=="g9"){
+                    paper.data.grade_level = "Grade_6";
+                }
+                else if(grade_level=="ol"){
+                    paper.data.grade_level = "Ordinary_Level";
+                }
+                else if(grade_level=="al"){
+                    paper.data.grade_level = "Advanced_Level";
+                }
+                else if(grade_level=="other"){
+                    paper.data.grade_level = "Other";
+                }
+                else{
+                    paper.data.grade_level = "Other";
+                }
+                paperRef.doc(paper.id).update(paper.data);
+            }
+        });                 
+        res.status(200).json("Updated grade_level in all papers");;
+    }).catch(err =>{
+        console.log('Error getting paper documents', err);
+        res.status(500).json('Error getting paper documents', err);
+    });
+});
+
+// Devolpement usages
 router.get("/student", (req, res, next) =>{
     console.log("Mtute-Users Development Mode");
     let users = [];
@@ -191,7 +237,7 @@ router.get("/student", (req, res, next) =>{
 router.get("/instructor", (req, res, next) =>{
     console.log("Mtute-Users Development Mode");
     let users = [];
-    userRef.where('role','==','i').get().then(snapshot =>{
+    userRef.where('role','==','instructor').get().then(snapshot =>{
         snapshot.forEach(doc =>{
             users.push({id: doc.id, data: doc.data()});
         });     

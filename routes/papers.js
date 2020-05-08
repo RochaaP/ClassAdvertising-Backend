@@ -5,6 +5,8 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 var paperRef = db.collection("papers");
+var subjectRef = db.collection("subjects");
+var userRef = db.collection("users");
 
 // Get all papers
 router.get("/", (req, res, next) =>{
@@ -55,6 +57,42 @@ router.get("/instructor/:instructorId", (req, res, next) =>{
         res.status(200).json(papers);
     }).catch(err =>{
         const error = new Error('Error getting paper documents: '+ err);
+        error.status = 500;
+        next(error);
+    });
+});
+
+// Get papers by instructor email
+router.get("/instructoremail/:email", (req, res, next) =>{
+    let email = req.params.email;
+    console.log("Mtute-Papers by InstructorEmail " + email);   
+    let subjects = [];
+    let papers = [];
+    userRef.where('email', "==", email).limit(1).get().then(snapshot =>{
+        snapshot.forEach(user =>{            
+            paperRef.where('instructor', '==', user.id).where('published', '==', true).get().then(snapshot =>{
+                snapshot.forEach(doc =>{
+                    papers.push({id: doc.id, data: doc.data()});
+                });  
+                console.log(papers);
+                subjectRef.get().then(s_snapshot=>{
+                    s_snapshot.forEach(subject=>{
+                        subjects.push({id: subject.id, data: subject.data()});
+                    });                    
+                    res.status(200).json({"papers":papers, "subjects":subjects});
+                }).catch(err =>{
+                    const error = new Error('Error getting subjects documents: '+ err);
+                    error.status = 500;
+                    next(error);
+                });
+            }).catch(err =>{
+                const error = new Error('Error getting paper documents: '+ err);
+                error.status = 500;
+                next(error);
+            });
+        });
+    }).catch(err =>{
+        const error = new Error('Error getting user documents: '+ err);
         error.status = 500;
         next(error);
     });

@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path'); 
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression')
 const app = express();
 
 
@@ -21,8 +22,8 @@ const apiForwarder = require("./routes/apiForwarder");
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log('mtute.lk listening on port 3000!'));
 
-// Forwarding Frontend routes
-app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
+// GZipping Bundles
+app.use(compression());
 
 // Handling CORS
 app.use(cors());
@@ -45,6 +46,9 @@ app.use(bodyParser.json());
 // Routes
 app.use("/dev", devRouter); // This router will be used only for development process
 app.use("/api", apiForwarder);
+
+// Forwarding Frontend routes
+app.use(express.static('dist/frontend'));    //uncomment this when push to heroku
 
 app.use('*', (req,res) => {
   res.sendFile(path.join(__dirname+'/dist/frontend/index.html'));

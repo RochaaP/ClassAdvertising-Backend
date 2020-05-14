@@ -75,7 +75,9 @@ router.post("/", (req, res, next) =>{
         })
         console.log(attempts.length);
         if(attempts.length==0){
-            attemptRef.add(req.body).then(onfulfilled => {
+            let attempt = req.body;
+            attempt["timestamp"] = admin.firestore.Timestamp.now();
+            attemptRef.add(attempt).then(onfulfilled => {
                 console.log('Added attempt document with ID: ', onfulfilled.id);
                 res.status(201).json(onfulfilled.id);
               },
@@ -115,7 +117,7 @@ router.post("/", (req, res, next) =>{
                 "highest": highest,
                 "lowest": lowest,
                 "no_of_attempts": no_of_attempts,
-                "timestamp": attempt["timestamp"],
+                "timestamp": admin.firestore.Timestamp.now(),
                 "user": attempt["user"],
                 "paper": attempt["paper"]
             }

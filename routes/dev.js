@@ -5,6 +5,7 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 var paperRef = db.collection("papers");
+var noteRef = db.collection("notes");
 var questionRef = db.collection("questions");
 var userRef = db.collection("users");
 var studentRef = db.collection("student");
@@ -200,6 +201,51 @@ router.get("/paper_grade_level", (req, res, next) =>{
     }).catch(err =>{
         console.log('Error getting paper documents', err);
         res.status(500).json('Error getting paper documents', err);
+    });
+});
+
+// Devolpement usages
+router.get("/note_grade_level", (req, res, next) =>{
+    console.log("Mtute-Users Development Mode");
+    let notes = [];
+    noteRef.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            notes.push({id: doc.id, data: doc.data()});
+        });     
+        notes.forEach(note=>{
+            if(note.data.grade_level!=undefined){
+                let grade_level = note.data.grade_level;
+                if(grade_level=="g6"){
+                    note.data.grade_level = "Grade_6";
+                }
+                else if(grade_level=="g7"){
+                    note.data.grade_level = "Grade_7";
+                }
+                else if(grade_level=="g8"){
+                    note.data.grade_level = "Grade_8";
+                }
+                else if(grade_level=="g9"){
+                    note.data.grade_level = "Grade_6";
+                }
+                else if(grade_level=="ol"){
+                    note.data.grade_level = "Ordinary_Level";
+                }
+                else if(grade_level=="al"){
+                    note.data.grade_level = "Advanced_Level";
+                }
+                else if(grade_level=="other"){
+                    note.data.grade_level = "Other";
+                }
+                else{
+                    note.data.grade_level = "Other";
+                }
+                noteRef.doc(note.id).update(note.data);
+            }
+        });                 
+        res.status(200).json("Updated grade_level in all notes");;
+    }).catch(err =>{
+        console.log('Error getting note documents', err);
+        res.status(500).json('Error getting note documents', err);
     });
 });
 

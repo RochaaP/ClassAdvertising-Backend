@@ -4,7 +4,7 @@ const http = require("http");
 const axios = require('axios');
 
 const ZOOM_CLIENT_ID = "eezr713VT0u99HLZYP6wng"; //w5mE3K3KQdC5ib7ZVDy4Tw
-const redirect_URL = "https://mtute.herokuapp.com/zoom";
+const redirect_URL = "https://www.mtute.com/zoom";
 
 // Get attempts
 router.get("/index", (req, res, next) =>{    

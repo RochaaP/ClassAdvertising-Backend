@@ -10,27 +10,11 @@ var userRef = db.collection("users");
 // Get all the subjects
 router.get("/", (req, res, next) =>{
     console.log("Mtute-Subjects");
-    let subjects = [];    
-    let instructors = [];
+    let subjects = [];  
     subjectRef.get().then(async (snapshot) =>{
         snapshot.forEach(doc =>{
             subjects.push({id: doc.id, data: doc.data()});
-        }); 
-        await userRef.where("role", "==", "instructor").get().then(snapshot =>{
-            snapshot.forEach(doc =>{
-                let name = doc.data().firstname + " " + doc.data().lastname;
-                instructors.push({id: doc.id, name: name});
-            });  
-        }).catch(err =>{
-            console.log('Error getting user documents', err);
-            const error = new Error('Error getting user documents', err);
-            error.status = 500;
-            next(error);
-        });                       
-        res.status(200).json({
-            "subjects": subjects, 
-            "instructors": instructors
-        });
+        });    
     }).catch(err =>{
         console.log('Error getting subject documents', err);
         const error = new Error('Error getting subject documents', err);

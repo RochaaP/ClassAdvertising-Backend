@@ -173,7 +173,7 @@ router.get('/getAll', (req, res) => {
         snapshot.forEach(doc =>{
             userDetails.push({id: doc.id, data: doc.data()});
         });                        
-        res.status(200).json(userDetails);  
+        res.json({status:200,userDetails})     
 
     }).catch(err =>{
         res.status(500).json('Error getting document: '+ err);

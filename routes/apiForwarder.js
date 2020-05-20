@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Routin Imports
 const zoomRouter = require("./zoom");
+const commonRouter = require("./common");
 const paperRouter = require("./papers");
 const questionRouter = require("./questions");
 const userRouter = require("./users");
@@ -28,6 +29,7 @@ const postsRouter = require('./posts/posts');
 
 // Routes
 router.use("/zoom", zoomRouter);
+router.use("/common", commonRouter);
 router.use("/papers", paperRouter);
 router.use("/questions", questionRouter);
 router.use("/users", userRouter);

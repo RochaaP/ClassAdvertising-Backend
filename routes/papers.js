@@ -152,24 +152,39 @@ router.post("/", (req, res, next) =>{
 
 router.post("/subjects/",async (req, res, next) =>{
     let subjectArray = req.body["subjectArray"];  
+    let subjectArrayLength = subjectArray.length;
+    let index = 0;
     console.log(subjectArray);
     let papers = [];
     const waitForPapers = new Promise(async (resolve, reject)=>{
-        await subjectArray.forEach(async (element,index, array) => {
+        await subjectArray.forEach(async (element) => {
+            console.log("Index: " + index);
             console.log("Subject Id: " + element);
-            let sub_papers = [];
+            let sub_papers = [];            
+            let index_paperSnapshot = 0;
             await paperRef.where("subject", "==", element).where("published", "==", true).get().then(snapshot =>{
-                snapshot.forEach(doc =>{
-                    sub_papers.push({id: doc.id, data: doc.data()});
-                });
-                console.log(sub_papers);
+                if(snapshot.empty){
+                    papers.push({subject: element, papers: sub_papers});
+                    if(index === subjectArrayLength) resolve()
+                }
+                else{
+                    snapshot.forEach((doc, ) =>{
+                        sub_papers.push({id: doc.id, data: doc.data()});
+                        console.log(index_paperSnapshot);
+                        index_paperSnapshot++;
+                        if(index_paperSnapshot === snapshot.size){
+                            papers.push({subject: element, papers: sub_papers});
+                            index++;
+                            if(index === subjectArrayLength) resolve()
+                        }
+                    });
+                    console.log(sub_papers);
+                }
             }).catch(err =>{
                 const error = new Error('Error getting paper documents: '+ err);
                 error.status = 500;
                 next(error);
             });
-            papers.push({subject: element, papers: sub_papers});
-            if(index === array.length-1) resolve()
         });
     })
     waitForPapers.then(()=>{

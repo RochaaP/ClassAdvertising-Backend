@@ -9,12 +9,12 @@ let db = admin.firestore();
 
 //upload a new post
 router.post('/add',bodyParser.json(), (req, res) => {
-    const email = req.body['email'];
-    const registerItem = req.body['registerItem'];
-    const id = req.body['id']
+    const email = req.body.postDetails.email;
+    const registerItem = req.body.postDetails.registerItem;
+    const id = req.body.id;
     let userDetails=[];
   
-    if(registerItem == 'person'){
+    if(registerItem == 'instructor'){
       var collection = db.collection('users');
       collection.where('email', "==", email).get().then(snapshot =>{
         snapshot.forEach(doc =>{
@@ -26,16 +26,17 @@ router.post('/add',bodyParser.json(), (req, res) => {
   
           const document = db.doc('posts/'+id);
                 document.set({
-                  title: req.body['title'],
-                  email: req.body['email'],
+                  title: req.body.postDetails.title,
+                  email: req.body.postDetails.email,
                   verify: verify,
-                  contact: req.body['contact'],
-                  city: req.body['city'],
-                  district: req.body['district'],
+                  contact: req.body.postDetails.contact,
+                  city: req.body.postDetails.city,
+                  district: req.body.postDetails.district,
                   name: vale,
                   proPic: proPic,
-                  description: req.body['description'],
-                  path: req.body['path'],
+                  description: req.body.postDetails.description,
+                  path: req.body.postDetails.contentURL,
+                  metadata: req.body.postDetails.metaData,
                   registerItem: registerItem,
                   create: admin.firestore.FieldValue.serverTimestamp()
                   
@@ -49,7 +50,7 @@ router.post('/add',bodyParser.json(), (req, res) => {
                     console.error('Error writing document: ', error);
                 });
         });                        
-        res.json({status:200});
+        // res.json({status:200});
       }).catch(err =>{
           res.json({status:400});
           res.status(500).json('Error getting document: '+ err);
@@ -66,16 +67,17 @@ router.post('/add',bodyParser.json(), (req, res) => {
           
           const document = db.doc('posts/'+id);
                 document.set({
-                  email: req.body['email'],
-                  name: name,
+                  title: req.body.postDetails.title,
+                  email: req.body.postDetails.email,
                   verify: verify,
+                  contact: req.body.postDetails.contact,
+                  city: req.body.postDetails.city,
+                  district: req.body.postDetails.district,
+                  name: name,
                   proPic: proPic,
-                  title: req.body['title'],
-                  contact: req.body['contact'],
-                  city: req.body['city'],
-                  district: req.body['district'],
-                  description: req.body['description'],
-                  path: req.body['path'],
+                  description: req.body.postDetails.description,
+                  path: req.body.postDetails.contentURL,
+                  metadata: req.body.postDetails.metaData,
                   registerItem: registerItem,
                   create: admin.firestore.FieldValue.serverTimestamp()
                 })

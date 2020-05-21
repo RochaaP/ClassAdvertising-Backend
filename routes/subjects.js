@@ -14,7 +14,8 @@ router.get("/", (req, res, next) =>{
     subjectRef.get().then(async (snapshot) =>{
         snapshot.forEach(doc =>{
             subjects.push({id: doc.id, data: doc.data()});
-        });    
+        }); 
+        res.status(200).json(subjects); 
     }).catch(err =>{
         console.log('Error getting subject documents', err);
         const error = new Error('Error getting subject documents', err);

@@ -10,8 +10,9 @@ let db = admin.firestore();
 
 //register
 router.post('/register', bodyParser.json(), (req, res) => {
-
+    console.log(req.body);
     id = req.body['id'];
+    console.log(req.body);
     
     registerItem = req.body['registerItem'];
  
@@ -23,12 +24,12 @@ router.post('/register', bodyParser.json(), (req, res) => {
       role: req.body['registerItem'],
       firstname: req.body['firstName'],
       lastname: req.body['lastName'],
+      contact: req.body['contact'],
       create: admin.firestore.FieldValue.serverTimestamp().toString(),
       verify: 'assets/verification/not_verified.png',
       adminFeatures: false,
       img_url:'',
       metaData:'',
-      contact: req.data['contact']
     });
      const document = db.doc('instructor/'+id);
      document.set({
@@ -66,12 +67,12 @@ router.post('/register', bodyParser.json(), (req, res) => {
  
      })
      .then(function() {
-       console.log('Instructor successfully registered!');
-      
+        console.log('Instructor successfully registered!');
+        res.json({status: 200});                    
      })
      .catch(function(error) {
          console.error('Error writing document: ', error);
-        
+         res.json({status: 400,error});                              
      });
     }
     else if(registerItem == 'institute'){
@@ -104,11 +105,11 @@ router.post('/register', bodyParser.json(), (req, res) => {
      })
      .then(function() {
        console.log('Institute successfully registered!');
-       // res.json({status:200});
+       res.json({status: 200});
      })
      .catch(function(error) {
          console.error('Error writing document: ', error);
-         // res.json({status:500});
+         res.json({status: 400,error});                              
      });
     }
  
@@ -136,13 +137,14 @@ router.post('/register', bodyParser.json(), (req, res) => {
       })
       .then(function() {
         console.log('Student successfully written!');
+        res.json({status: 200});
       })
       .catch(function(error) {
-          console.error('Error writing document: ', error);
+        console.error('Error writing document: ', error);
+        res.json({status: 400,error});
+
       });
      }
-    
-     res.json(req.body);
  });
 
 

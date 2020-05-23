@@ -49,6 +49,7 @@ router.post('/get',bodyParser.json(), (req, res) => {
 
 //update details
 router.post('/update', bodyParser.json(), (req, res) => {
+    console.log(req.body)
     id = req.body['id'];
     const document = db.doc('users/'+id);
     document.update({

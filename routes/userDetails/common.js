@@ -42,7 +42,6 @@ router.post('/register', bodyParser.json(), (req, res) => {
        university: '', 
        degreeYear: '',
        grad: '',
-       profileImagePath: '',
        backgroundImagePath: '',
        backgroundMetaData: '',
        yearExperiences: '',

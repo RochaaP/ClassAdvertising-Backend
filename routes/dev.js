@@ -304,6 +304,7 @@ router.get("/instructor", (req, res, next) =>{
                     let instructor = {
                         "achievement": [],
                         "backgroundImagePath": "",
+                        "backgroundMetaData": "",
                         "degree": "",
                         "degreeMSc": "",
                         "degreePhd": "",
@@ -315,7 +316,6 @@ router.get("/instructor", (req, res, next) =>{
                         "gradeC": "",
                         "gradeS": "",
                         "personalAchievement": [],
-                        "profileImagePath": "",
                         "subject": "",
                         "teachingSchool": "",
                         "university": "",
@@ -359,6 +359,29 @@ router.get("/user", (req, res, next) =>{
     }).catch(err =>{
         console.log('Error getting user documents', err);
         res.status(500).json('Error getting user documents', err);
+    });
+});
+
+// Devolpement usages
+router.get("/instructorDoc", (req, res, next) =>{
+    console.log("Mtute-Users Development Mode");
+    let instructors = [];
+    instructorRef.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            instructors.push({id: doc.id, data: doc.data()});
+        });     
+        instructors.forEach(instructor=>{ 
+            // if(instructor.data.backgroundMetaData==undefined){
+            //     instructor.data.backgroundMetaData = "";
+            // }
+            instructorRef.doc(instructor.id).update({
+                profileImagePath: fieldValue.delete()
+            });
+        });                 
+        res.status(200).json("Updated docs for all instructors");;
+    }).catch(err =>{
+        console.log('Error getting instructor documents', err);
+        res.status(500).json('Error getting instructor documents', err);
     });
 });
 

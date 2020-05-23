@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const admin = require('firebase-admin');
+const fieldValue = admin.firestore.FieldValue; 
 
 let db = admin.firestore();
 var paperRef = db.collection("papers");
@@ -330,6 +331,31 @@ router.get("/instructor", (req, res, next) =>{
             })
         });                 
         res.status(200).json("Created instructor docs for all user-instructor");;
+    }).catch(err =>{
+        console.log('Error getting user documents', err);
+        res.status(500).json('Error getting user documents', err);
+    });
+});
+
+// Devolpement usages
+router.get("/user", (req, res, next) =>{
+    console.log("Mtute-Users Development Mode");
+    let users = [];
+    userRef.get().then(snapshot =>{
+        snapshot.forEach(doc =>{
+            users.push({id: doc.id, data: doc.data()});
+        });     
+        users.forEach(user=>{ 
+            userRef.doc(user.id).update({
+                data: fieldValue.delete(),
+                id: fieldValue.delete(),
+                mobile: fieldValue.delete(),
+                instructor: fieldValue.delete(),
+                student: fieldValue.delete(),
+                institute: fieldValue.delete()
+            });
+        });                 
+        res.status(200).json("Updated docs for all users");;
     }).catch(err =>{
         console.log('Error getting user documents', err);
         res.status(500).json('Error getting user documents', err);

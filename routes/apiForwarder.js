@@ -17,6 +17,8 @@ const appointmentTempRouter = require("./appointments/temp");
 
 const adminImageRouter = require('./admin/images');
 const adminVerifyRouter = require('./admin/verify');
+const adminPanelRouter = require('./admin/panel');
+
 
 
 const userDetailsRouter = require('./userDetails/navigate');
@@ -40,6 +42,7 @@ router.use("/attempts", attemptRouter);
 
 router.use('/admin/images', adminImageRouter);
 router.use('/admin/verify', adminVerifyRouter);
+router.use('/admin/panel', adminPanelRouter);
 
 router.use('/userDetails', userDetailsRouter);
 

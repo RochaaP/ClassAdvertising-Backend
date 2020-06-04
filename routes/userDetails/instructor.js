@@ -37,9 +37,10 @@ router.post('/get',bodyParser.json(), (req, res) => {
             collection2.get().then(doc2=> {
                 console.log(id);
                 userDetails.push({id:doc.id,data:doc.data(),more:doc2.data()});
-                res.status(200).json(userDetails); 
+                res.json({status:200, userDetails}); 
             })
             .catch(err => {
+                res.json({status:400, err}); 
                 console.log('Error getting document', err);
             });
         });

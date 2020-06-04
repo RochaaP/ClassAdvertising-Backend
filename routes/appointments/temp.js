@@ -9,7 +9,6 @@ let db = admin.firestore();
 
 
 router.post('/makeAppointment',bodyParser.json(),(req,res) =>{
-    console.log('yeah');
     studentEmail =  req.body['studentEmail'],
     instructorEmail = req.body['instructorEmail']    
 

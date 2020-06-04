@@ -152,6 +152,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
 
 // get user register data
 router.post('/getUserRegData',bodyParser.json(), (req, res) => {
+  console.log(req.body.email)
     let email = req.body['email'];
     let userDetails=[];
     var collection = db.collection('users');
@@ -172,6 +173,7 @@ router.post('/getUserRegData',bodyParser.json(), (req, res) => {
 router.get('/getAll', (req, res) => {
     let userDetails=[];
     var collection = db.collection('users').orderBy('firstname');
+    // var collection = db.collection('users').limit(5);
     collection.get().then(snapshot =>{
         snapshot.forEach(doc =>{
             userDetails.push({id: doc.id, data: doc.data()});

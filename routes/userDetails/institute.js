@@ -24,6 +24,7 @@ router.get('/getAll', (req, res) => {
 // get details individual
 router.post('/get',bodyParser.json(), (req, res) => {
     const email = req.body['email'];
+    console.log(email)
     let userDetails = [];
     var collection = db.collection('users');
     
@@ -34,7 +35,7 @@ router.post('/get',bodyParser.json(), (req, res) => {
             let collection2 = db.collection('institute').doc(id);
             collection2.get().then(doc2=> {
                 userDetails.push({id:doc.id,data:doc.data(),more:doc2.data()});
-                res.status(200).json(userDetails); 
+                res.json({status: 200,userDetails}) 
             
             })
             .catch(err => {

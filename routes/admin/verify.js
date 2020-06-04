@@ -6,7 +6,7 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 
 
-router.post('/', bodyParser.json(), (req, res) => {
+router.put('/', bodyParser.json(), (req, res) => {
     const email = req.body['email'];
     var collection = db.collection('users').where('email', "==", email);
     collection.get().then(snapshot =>{
@@ -17,6 +17,7 @@ router.post('/', bodyParser.json(), (req, res) => {
              verify: 'assets/verification/verified.png'
             })
             .then(function() {
+              res.json({status:200});
               console.log('user successfully verified!');
             })
             .catch(function(error) {

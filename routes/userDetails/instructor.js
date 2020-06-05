@@ -60,7 +60,7 @@ router.post('/update', bodyParser.json(), (req, res) => {
         lastname: req.body['lastName'],
         contact: req.body['contact'],
         img_url: req.body['img_url'],
-        metaData: req.body['metaData'],
+        metadata: req.body['metadata'],
         units: req.body['units'],
         grade_level: req.body['grade_level']
     },{merge:true});

@@ -30,7 +30,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
       verify: 'assets/verification/not_verified.png',
       adminFeatures: false,
       img_url:'',
-      metaData:'',
+      metadata:'',
     });
      const document = db.doc('instructor/'+id);
      document.set({
@@ -88,7 +88,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
        verify: 'assets/verification/not_verified.png',
        adminFeatures: false,
        img_url:'',
-       metaData: ''
+       metadata: ''
      });
  
      const document = db.doc('institute/'+id);
@@ -126,7 +126,7 @@ router.post('/register', bodyParser.json(), (req, res) => {
        verify: 'assets/verification/not_verified.png',
        adminFeatures: false,
        img_url:'',
-       metaData: '',
+       metadata: '',
        contact: req.body['contact']
      });
       const document = db.doc('student/'+id);

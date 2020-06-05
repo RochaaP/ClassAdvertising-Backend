@@ -5,17 +5,32 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 var attemptRef = db.collection("attempts");
+var paperRef = db.collection("papers");
 
 // Get attempts by userId
 router.get("/byuser/:userId", (req, res, next) =>{    
     console.log("Mtute-Attempts Filter By User Id");
     let userId = req.params.userId;
     let attempts = [];
-    attemptRef.where('user', "==", userId).get().then(snapshot =>{
-        snapshot.forEach(docs =>{
-            attempts.push({id: docs.id, data: docs.data()});
-        });                        
-        res.status(200).json(attempts);   
+    attemptRef.where('user', "==", userId).get().then(snapshot1 =>{
+        let index = 0;
+        snapshot1.forEach(doc => {
+            let attempt = doc.data();
+            let timestamp = attempt.timestamp.toDate().toDateString();
+            paperRef.doc(doc.data().paper).get().then(snapshot2 => {
+                console.log(snapshot2.data());
+                attempts.push({ id: doc.id, data: attempt, paper: snapshot2.data(), timestamp: timestamp });
+                index++;
+                if(index === snapshot1.size){
+                    res.status(200).json(attempts); 
+                }
+            }).catch(err => {
+                console.log(err);
+                const error = new Error(err);
+                error.status = 500;
+                next(error);
+            });
+        });   
     }).catch(err =>{
         console.log(err);
         const error = new Error(err);

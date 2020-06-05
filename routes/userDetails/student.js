@@ -5,10 +5,11 @@ const admin = require('firebase-admin');
 
 let db = admin.firestore();
 
-// get all users
+
+// Get all users
 router.get('/getAll', (req, res) => {
     let userDetails=[];
-    var collection = db.collection('users').where('role', '==', 'institute');
+    var collection = db.collection('users').where('role', '==', 'student');
     collection.get().then(snapshot =>{
       snapshot.forEach(doc =>{
           userDetails.push({id: doc.id, data: doc.data()});
@@ -21,64 +22,45 @@ router.get('/getAll', (req, res) => {
   })
   
 
-// get details individual
+
+//get details  individuals
 router.post('/get',bodyParser.json(), (req, res) => {
     const email = req.body['email'];
-    console.log(email)
     let userDetails = [];
     var collection = db.collection('users');
-    
+   
     collection.where('email', '==', email).get().then(snapshot =>{
         snapshot.forEach(doc => {
-            const id = doc.id;
-    
-            let collection2 = db.collection('institute').doc(id);
-            collection2.get().then(doc2=> {
-                userDetails.push({id:doc.id,data:doc.data(),more:doc2.data()});
-                res.json({status: 200,userDetails}) 
-            
-            })
-            .catch(err => {
-                console.log('Error getting document', err);
-            });
+            userDetails.push({id:doc.id,data:doc.data()});
+            res.json({status:200, userDetails}); 
         });
     });        
 });
-  
+
 
 //update details
 router.post('/update', bodyParser.json(), (req, res) => {
+    console.log(req.body)
     id = req.body['id'];
     const document = db.doc('users/'+id);
     document.update({
-      // email: req.body['email'],
-        firstname: req.body['firstname'],
+        email: req.body['email'],
+        firstname: req.body['firstName'],
+        lastname: req.body['lastName'],
         contact: req.body['contact'],
         img_url: req.body['img_url'],
-        metadata: req.body['metadata']
-    
-    },{merge:true});
-  
-    const document2  = db.doc('institute/'+id);
-    document2.update({
-        streetNo1: req.body['streetNo1'],
-        streetNo2: req.body['streetNo2'],
-        city: req.body['city'],
-        district: req.body['district'],
-        province: req.body['province'],
-        backgroundImagePath: req.body['backgroundImagePath'],
-        backgroundMetaData: req.body['backgroundMetaData']
-  
+        metadata: req.body['metadata'],
+        units: req.body['units'],
+        grade_level: req.body['grade_level']
     },{merge:true})
     .then(function() {
         res.json({status:200});
         console.log('Document successfully written!');
     })
     .catch(function(error) {
+        res.json({status:400})
         console.error('Error writing document: ', error);
-        res.status(500).json('Error getting document: '+ err);
     });
-  
 });
-  
+
 module.exports = router;

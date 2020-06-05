@@ -21,7 +21,7 @@ router.post('/uploadFiles',bodyParser.json(),(req,res) =>{
     // proPic: proPic,
     description: req.body.notesDetails.description,
     contentURL: req.body.notesDetails.contentURL,
-    metaData: req.body.notesDetails.metaData,
+    metadata: req.body.notesDetails.metadata,
     year: req.body.notesDetails.year,
     timestamp: admin.firestore.FieldValue.serverTimestamp()
     

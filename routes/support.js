@@ -6,19 +6,19 @@ const admin = require('firebase-admin');
 let db = admin.firestore();
 var contactRef = db.collection("contactus");
 
-router.get("/contactUs", (req, res, next) =>{
+router.get("/contactUs", (req, res) =>{
     console.log("Mtute-ContactUs");
-    let contactUsReqs = [];    
+    let userDetails = [];    
     contactRef.get().then(async (snapshot) =>{
         snapshot.forEach(doc =>{
-            contactUsReqs.push({id: doc.id, data: doc.data()});
+            userDetails.push({id: doc.id, data: doc.data()});
         });                     
-        res.status(200).json(contactUsReqs);  
+        res.json({status:200,userDetails});  
     }).catch(err =>{
         console.log('Error getting ContactUs documents', err);
         const error = new Error('Error getting ContactUs documents', err);
         error.status = 500;
-        next(error);
+        res.json({status: 500, err});
     });
 });
 

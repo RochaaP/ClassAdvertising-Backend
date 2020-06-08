@@ -177,6 +177,34 @@ router.delete('/deleteFaq/:id',(req, res) => {
     });
 })
 
+//// Make Admin /////
+router.put('/makeAdmin',bodyParser.json(),(req, res) => {
+    let updateRef = db.collection('users').doc(req.body.id);
+    updateRef.set({
+        adminFeatures : true
+    },{merge:true})
+    .then(
+      res.json({status:200})  
+    ).catch(err => {
+        console.log(err);
+        res.json({status:500, err});
+    });
+})
+
+
+///// Revoke Admin ////////
+router.put('/removeAdmin',bodyParser.json(),(req, res) => {
+    let updateRef = db.collection('users').doc(req.body.id);
+    updateRef.set({
+        adminFeatures : false
+    },{merge:true})
+    .then(
+      res.json({status:200})  
+    ).catch(err => {
+        console.log(err);
+        res.json({status:500, err});
+    });
+})
 
 
 module.exports = router;

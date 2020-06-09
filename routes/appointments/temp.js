@@ -90,16 +90,16 @@ router.post('/makeAppointment',bodyParser.json(),(req,res) =>{
 //get all appointments - for instructor
 router.post('/getAppointments/instructor',bodyParser.json(), (req, res) => {
     let email = req.body['email'];
-    let userDetails=[];
+    let messages=[];
     var collection = db.collection('temp');
    
     collection.where('instructorEmail', "==", email).get().then(snapshot =>{
         snapshot.forEach(doc =>{
-            userDetails.push({id:doc.id, data: doc.data()});
-        });                        
-        res.status(200).json(userDetails);   
+            messages.push({id:doc.id, data: doc.data()});
+        });            
+        res.json({status: 200, messages});            
     }).catch(err =>{
-        res.status(500).json('Error getting document: '+ err);
+        res.json({status: 500, err});
     });
 });
 

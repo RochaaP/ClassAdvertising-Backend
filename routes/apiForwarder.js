@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 // Routin Imports
-const zoomRouter = require("./zoom");
-const supportRouter = require("./support");
-const commonRouter = require("./common");
-const paperRouter = require("./papers");
-const questionRouter = require("./questions");
-const userRouter = require("./users");
-const subjectRouter = require("./subjects");
-const attemptRouter = require("./attempts");
+const zoomRouter = require("./zoom/zoom");
+const supportRouter = require("./support/support");
+const commonRouter = require("./common/common");
+const paperRouter = require("./papers/papers");
+const questionRouter = require("./questions/questions");
+const userRouter = require("./users/users");
+const subjectRouter = require("./subjects/subjects");
+const attemptRouter = require("./attempts/attempts");
+const paymentRouter = require("./payments/payments");
 
 const appointmentRouter = require("./appointments/appointments");
 const appointmentTempRouter = require("./appointments/temp");
@@ -39,6 +40,7 @@ router.use("/questions", questionRouter);
 router.use("/users", userRouter);
 router.use("/subjects", subjectRouter);
 router.use("/attempts", attemptRouter);
+router.use("/payments", paymentRouter);
 
 router.use('/admin/images', adminImageRouter);
 router.use('/admin/verify', adminVerifyRouter);

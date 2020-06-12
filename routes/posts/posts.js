@@ -43,7 +43,21 @@ router.post('/add',bodyParser.json(), (req, res) => {
                 })
                 .then(function() {
                   console.log('Document successfully written!');
-                  res.json({status:200})
+
+                  const document = db.doc('payments/'+req.body.postDetails.payment_id);
+                  document.update({
+                    status_code: "3",
+                    status_message: "Successfully created the post"
+                  })
+                  .then(function() {
+                    console.log('Document successfully written!');
+                    res.json({status:200})
+                  })
+                  .catch(function(error) {
+                    res.json({status:400});
+                      console.error('Error writing document: ', error);
+                  });
+
                 })
                 .catch(function(error) {
                   res.json({status:400});

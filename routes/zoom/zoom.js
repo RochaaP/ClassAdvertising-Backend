@@ -3,7 +3,7 @@ const router = express.Router();
 const http = require("http");
 const axios = require('axios');
 
-const ZOOM_CLIENT_ID = "eezr713VT0u99HLZYP6wng"; //w5mE3K3KQdC5ib7ZVDy4Tw
+const ZOOM_CLIENT_ID = "hPDxBy3PR7eOfPslM0gNnw"; //eezr713VT0u99HLZYP6wng
 const redirect_URL = "https://www.mtute.lk/zoom";
 
 // Get attempts

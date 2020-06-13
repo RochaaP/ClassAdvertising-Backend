@@ -150,6 +150,35 @@ router.post("/", (req, res, next) =>{
       });
 });
 
+router.post("/subject/",async (req, res, next) =>{    
+    console.log("Mtute-Paper Filter by Subject");
+    let subject = req.body["subject"]; 
+    console.log(subject);
+    let papers = [];    
+    let sub_papers = [];             
+    let index_paperSnapshot = 0;           
+    await paperRef.where("subject", "==", subject).where("published", "==", true).get().then(snapshot =>{
+        if(snapshot.empty){
+            papers.push({subject: subject, papers: []});
+            res.status(200).json(papers);
+        }
+        else{
+            snapshot.forEach((doc) =>{
+                sub_papers.push({id: doc.id, data: doc.data()});
+                index_paperSnapshot++;
+                if(index_paperSnapshot === snapshot.size){
+                    papers.push({subject: subject, papers: sub_papers});
+                    res.status(200).json(papers);
+                }
+            });
+        }
+    }).catch(err =>{
+        const error = new Error('Error getting paper documents: '+ err);
+        error.status = 500;
+        next(error);
+    });
+});
+
 router.post("/subjects/",async (req, res, next) =>{
     let subjectArray = req.body["subjectArray"];  
     let subjectArrayLength = subjectArray.length;

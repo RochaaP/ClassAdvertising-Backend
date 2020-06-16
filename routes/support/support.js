@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { transporter, mailOptions } = require("../../nodemailer/nodemailer");
+const { transporter, adminMailOptions } = require("../../nodemailer/nodemailer");
 
 const admin = require('firebase-admin');
 
@@ -26,13 +26,19 @@ router.get("/contactUs", (req, res) =>{
 
 router.post("/contactUs", (req, res, next) =>{
     console.log("Mtute-Contact Us");
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
+    try {
+        transporter.sendMail(adminMailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+    } catch (error) {
+        const err = new Error(error);
+        err.status = 500;
+        next(err);
+    }
     contactRef.add(req.body).then(()=>{
         res.status(200).send({"status": "OK"});
     },

@@ -18,7 +18,9 @@ router.get("/index", (req, res, next) =>{
 router.get("/accessToken/:code", (req, res, next) =>{ 
     console.log("Mtute-Zoom accessToken"); 
     const options = {
-        headers: {"Authorization": `Basic ZWV6cjcxM1ZUMHU5OUhMWllQNnduZzpXUjlpcTJJUEFDYldGTDBLNlhyM2xpU2s2anUxMXNoZw==`}
+        headers: {"Authorization": `Basic aFBEeEJ5M1BSN2VPZlBzbE0wZ05udzpOMEJxcHBGTElMdzVQMnM1dG14cjBhcEdIb1ZMR0xiZw==`}
+        //headers: {"Authorization": `Basic ZWV6cjcxM1ZUMHU5OUhMWllQNnduZzpXUjlpcTJJUEFDYldGTDBLNlhyM2xpU2s2anUxMXNoZw==`}
+        
       }
     let code = req.params.code;
     axios.post(`https://zoom.us/oauth/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect_URL}`, {}, options)
@@ -38,7 +40,7 @@ router.get("/accessToken/:code", (req, res, next) =>{
 router.get("/refreshToken/:token", (req, res, next) =>{ 
   console.log("Mtute-Zoom accessToken"); 
   const options = {
-      headers: {"Authorization": `Basic ZWV6cjcxM1ZUMHU5OUhMWllQNnduZzpXUjlpcTJJUEFDYldGTDBLNlhyM2xpU2s2anUxMXNoZw==`}
+      headers: {"Authorization": `Basic aFBEeEJ5M1BSN2VPZlBzbE0wZ05udzpOMEJxcHBGTElMdzVQMnM1dG14cjBhcEdIb1ZMR0xiZw==`}
     }
   let token = req.params.token;
   axios.post(`https://zoom.us/oauth/token?grant_type=refresh_token&refresh_token=${token}`, {}, options)
